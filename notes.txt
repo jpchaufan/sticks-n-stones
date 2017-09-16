@@ -1,0 +1,74 @@
+Sticks and Stones
+
+A simple wilderness survival game
+
+features:
+	procedurally generated maps with caves and water.
+	procedurally generated music
+
+	health, hunger, thirst, and temperature meters
+
+	time heals, food fills, water refreshes, and fire warms
+
+	skills:
+		stones lvl - stone throwing power / speed / accuracy, build strong and durable walls
+		sticks lvl - swinging power / speed, fire-making efficiency
+		plants lvl - forage for more plants, (extra) better gardening skills, plant better plants and trees with higher success rate
+		crafting lvl - (extra) make better items of higher quality and with higher success of making it
+		fishing lvl - (extra) catch fish more easily
+
+	use stones to throw and to build walls
+	use sticks to swing and to start / fuel fires
+	forage for edible berries and leaves and roots
+	hunt for meat
+
+extra features:
+	plant seeds and grow crops and trees
+	collect hides to keep warm and craft bags
+	collect bones to make spears for stabbing and fishing
+	cooking takes time, nearness to the fire speeds cooking time, food can burn
+	find stumps and make coal-burned cup / bowl, to carry water and make soup
+	? food spoilage ?
+
+
+basic items: 
+	stones, sticks, fruits, leaves, roots / tubers, raw meat, cooked meat - 7
+extra items:
+	seeds, hides, bones, raw fish, cooked fish, wood chunk, cup / bowl, bowl of water, bowl of soup
+
+intended game-play: 
+	player must find water as a priority to deal with thirst, and light a fire to keep warm during the night.
+	food is another survival priority. the player can forage and hunt to get food. 
+	player figures things out based on simple grunts and utterances made by the character as they click on things and do stuff
+
+	the player gains exp in the various skills as they play, and become better at those survival tasks, and can collect more and better materials.
+	soon they get access to more abilities such as crafting, planting, fishing, etc.
+
+build plan: 
+	game world will be sectioned into world fragments. ( at first, only the main world fragment needs to be made )
+	each fragment will hold everything in it, having its own array for each thing. animals likely will stick to their territory ( world fragment )
+	drawing and collision checks will only need to occur for things overlapping the world fragments the camera is colliding with.
+
+	there will be a simple game UI with no menus: 
+
+	________________________________
+	|                              |
+	|  compass     levels and exp  |
+	|                              |
+	|                          i   |
+	|                          t   |
+	|  health              	   e   |
+	|  thirst                  m   |
+	|  hunger                  s   |
+	|  temp    items bar       2   |
+	|______________________________|
+
+	just click on items to select them and click on the screen to use them
+	go near water to auto drink it
+	make fire to cook food and keep warm and have light at night
+
+	some plants will be spikey or poisonous and hurt the player. plant skills help deal with these.
+	some animals will be dangerous and fight back, or even hunt the player.
+
+
+

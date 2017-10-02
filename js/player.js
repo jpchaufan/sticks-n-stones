@@ -1,7 +1,5 @@
 var app = app || {};
 
-app.startPoint = {x: app.world.w/2-50,  y: app.world.h/2-50}
-
 app.player = sprite('player', app.startPoint.x, app.startPoint.y, 24, 24);
 app.camera.setTo(app.player);
 
@@ -11,49 +9,66 @@ app.player.isMoving = false;
 app.player.anim = 0;
 
 app.player.move = function(dt){
-
-	var cam = app.camera;
-	if ( !this.alive ){ return }
+	var cam = app.camera, world = app.world;
+	if ( !this.alive || this.noMove){ return }
 	this.isMoving = false;
 	if (app.controller.left){ 
 		var possible = { x: this.x-this.speed*dt, y: this.y, w: this.w, h: this.h }
-		if ( !collidesArray( possible, blockingSprites() ) ){
+		if ( !collidesArray( possible, world.collideables ) ){
 			this.x -= this.speed*dt; cam.x -= this.speed*dt; this.direction = 'left'; this.isMoving = true;
 		}
 	}
 	if (app.controller.right){ 
 		var possible = { x: this.x+this.speed*dt, y: this.y, w: this.w, h: this.h }
-		if ( !collidesArray( possible, blockingSprites() ) ){
+		if ( !collidesArray( possible, world.collideables ) ){
 			this.x += this.speed*dt; cam.x += this.speed*dt; this.direction = 'right'; this.isMoving = true;
 		}
 	}
 	if (app.controller.up){ 
 		var possible = { x: this.x, y: this.y-this.speed*dt, w: this.w, h: this.h }
-		if ( !collidesArray( possible, blockingSprites() ) ){
+		if ( !collidesArray( possible, world.collideables ) ){
 			this.y -= this.speed*dt; cam.y -= this.speed*dt; this.direction = 'up'; this.isMoving = true;
 		}
 	}
 	if (app.controller.down){ 
 		var possible = { x: this.x, y: this.y+this.speed*dt, w: this.w, h: this.h }
-		if ( !collidesArray( possible, blockingSprites() ) ){
+		if ( !collidesArray( possible, world.collideables ) ){
 			this.y += this.speed*dt; cam.y += this.speed*dt; this.direction = 'down'; this.isMoving = true;
 		}
 	}
 }
 
 app.player.mouse = function(){
+	if (this.noMove){ return }
 	var ctrl = app.controller;
 	if ( ctrl.mousedown ){
 		var x = ctrl.x;
 		var y = ctrl.y;
+		// if (ctrl.status == 'click'){
+		// 	var wf = isPosInSprites( app.world.array, x, y );
+		// 	console.log( wf.getTileAt(x, y) );
+		// }
 		var dist = distanceTo(this, x, y);
 		var clickedOn = ctrl.clickedOn;
-		if ( clickedOn ){
+		if ( clickedOn ){ // console.log(clickedOn.type)
 			if (clickedOn.type == 'campfire'){
-				if ( ctrl.status == 'click' ) { say('mmm... fire warm'); }
+				if ( ctrl.status == 'click' ) { say('Mmm... Fire warm.'); }
 			} 
 			else if (clickedOn.type == 'player'){
-				if ( ctrl.status == 'click' ) { say('ug!'); }
+				if ( ctrl.status == 'click' ) { 
+					if (this.selecting){
+						if (this.selecting.name == 'Leaf'){ 
+							app.manageItems('Leaf', -1);
+							say('Mmm, crunchy leaf!')
+						}
+						else if (this.selecting.name == 'Pear'){ 
+							app.manageItems('Pear', -1);
+							say('Mmm, juicy fruit!')
+						}
+					}
+					else { say('Ug!'); }
+					 
+				}
 			} 
 			else if (clickedOn.type == 'stonePile'){
 				if (ctrl.status == 'click'){
@@ -61,18 +76,35 @@ app.player.mouse = function(){
 					else { say('too far!'); }	
 				}
 			}
+			else if (clickedOn.type == 'tree'){
+				if (ctrl.status == 'click'){
+					if (dist < 100){ app.clickTree(clickedOn); } 
+					else { say('too far!'); }	
+				}
+			}
+			else if (clickedOn.type == 'herb'){
+				if (ctrl.status == 'click'){
+					if (dist < 100){ app.clickHerb(clickedOn); } 
+					else { say('too far!'); }	
+				}
+			}
 			else if ( clickedOn.type == 'block' && dist < 80){
-				if ( ctrl.status == 'click' ){ app.destroyBlock(clickedOn); }
-				else if ( ctrl.status == 'dragging' ){ app.destroyBlock(ctrl.draggedOn); }
+				if ( ctrl.status == 'click' ){ app.destroyWall(clickedOn); }
+				else if ( ctrl.status == 'dragging' ){ app.destroyWall(ctrl.draggedOn); }
 				
 			}
 		} else if ( (dist > 20 && dist < 72) ){
-			if ( findItem('stones') >= 0 ){
-				app.makeBlock( x, y );	
+			if ( this.selecting ){
+				if ( this.selecting.name == 'Stones' ){
+					app.makeWall( x, y );	
+				} else if ( this.selecting.name == 'Sticks' && ctrl.status == 'click' ){
+					app.makeFire( x, y );	
+				}
 			}
 		}
 	}
 	ctrl.status = 'holding';
+
 }
 
 app.player.action = function(){
@@ -82,7 +114,7 @@ app.player.action = function(){
 	// 	var spriteHere = spriteAtPos(x, y);
 	// 	if (spriteHere){
 	// 		if ( spriteHere.type == 'block' && distanceTo(this, x, y) < 80 ){
-	// 			app.destroyBlock(spriteHere);
+	// 			app.destroyWall(spriteHere);
 	// 		}
 	// 	}
 	// }

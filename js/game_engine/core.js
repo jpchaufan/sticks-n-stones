@@ -7,6 +7,8 @@ var app = app || {};
 app.canvas = document.getElementById('canvas');
 app.canvas.width = Math.min(500, window.innerWidth);
 app.canvas.height = Math.min(300, window.innerHeight);
+var canvasW = app.canvas.width;
+var canvasH = app.canvas.height;
 
 app.ctx = canvas.getContext('2d'); 
 
@@ -43,6 +45,14 @@ function createUI(x, y, w, h, bgColor){
 	elem.style.width = w + 'px';
 	elem.style.height = h + 'px';
 	return elem;
+}
+
+function enableDnD(elem){
+	elem.draggable = true;
+	elem.addEventListener('dragend', function(e){
+		elem.style.left = (+elem.style.left.replace('px', ''))+e.offsetX+'px';
+		elem.style.top = (+elem.style.top.replace('px', ''))-200+e.offsetY+'px';
+	});
 }
 
 // Text //
@@ -100,18 +110,6 @@ createText('Sticks and Stones', 2700,
 
 // Utility Functions //
 
-function allSprites(){
-	return [app.player, app.campfire]
-			.concat(app.items)
-			//.concat(app.enemies)
-			.concat(app.blocks)
-			.concat(app.stonePiles);
-}
-
-function blockingSprites(){
-	return app.stonePiles.concat(app.blocks).concat(app.trees);
-}
-
 function collides(a, b){
 	return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 }
@@ -130,13 +128,9 @@ function isPosInSprite(sprite, x, y){
 					   sprite.y <= y && y <= sprite.y+sprite.h;
 }
 
-function spriteAtPos(x, y){
-	var sprites = allSprites();
-	for (var i = 0; i < sprites.length; i++) {
-		var sprite = sprites[i];
-		if ( isPosInSprite(sprite, x, y) ){
-			return sprite;
-		}
+function isPosInSprites(array, x, y){
+	for (var i = 0; i < array.length; i++) {
+		if ( isPosInSprite(array[i], x, y) ){ return array[i]; }
 	};
 }
 
@@ -150,7 +144,7 @@ function distanceTo(sprite, x, y){
 	return Math.sqrt( sideX*sideX + sideY*sideY );
 }
 
-function angleTo(sprite, x, y){ // NOT DONE, FIX NEXT
+function angleTo(sprite, x, y){
 	// get angle between a sprite and a point
 	var centerX = sprite.x + sprite.w/2;
 	var centerY = sprite.y + sprite.h/2;
@@ -165,4 +159,26 @@ function rand(n){
 	return Math.round( Math.random()*n );
 }
 
+// Unused //
 
+// function allSprites(){
+// 	return [app.player, app.campfire]
+// 			.concat(app.items)
+// 			//.concat(app.enemies)
+// 			.concat(app.blocks)
+// 			.concat(app.stonePiles);
+// }
+
+// function blockingSprites(){
+// 	return app.stonePiles.concat(app.blocks).concat(app.trees);
+// }
+
+// function spriteAtPos(x, y){
+// 	var sprites = allSprites();
+// 	for (var i = 0; i < sprites.length; i++) {
+// 		var sprite = sprites[i];
+// 		if ( isPosInSprite(sprite, x, y) ){
+// 			return sprite;
+// 		}
+// 	};
+// }

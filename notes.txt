@@ -21,6 +21,8 @@ features:
 	use sticks to swing and to start / fuel fires
 	forage for edible berries and leaves and roots
 	hunt for meat
+	stash items in trees and rocks
+
 
 extra features:
 	plant seeds and grow crops and trees
@@ -28,11 +30,13 @@ extra features:
 	collect bones to make spears for stabbing and fishing
 	cooking takes time, nearness to the fire speeds cooking time, food can burn
 	find stumps and make coal-burned cup / bowl, to carry water and make soup
+	swimming to cool off
 	? food spoilage ?
-
+	seasons and seasonal events -
+		like rains and blizzards, rabid wolf attacks, heat waves 
 
 basic items: 
-	stones, sticks, fruits, leaves, roots / tubers, raw meat, cooked meat - 7
+	stones, sticks, fruits, nuts, leaves, roots / tubers, meat, cooked versions of foods... ~ 10 total
 extra items:
 	seeds, hides, bones, raw fish, cooked fish, wood chunk, cup / bowl, bowl of water, bowl of soup
 
@@ -69,6 +73,79 @@ build plan:
 
 	some plants will be spikey or poisonous and hurt the player. plant skills help deal with these.
 	some animals will be dangerous and fight back, or even hunt the player.
+
+
+How Plants and Seasons Will Work:
+	- seasons will last 1 to 3 months ?
+	- the temperature algorithm numbers will vary based on seasons / months
+
+	- plants can spawn during warm temps, such as spring and summer-like temps
+	- based on accumulated temperature days, plants mature and produce edible fruits and roots
+	- in cold enough temps, plants die
+
+	- deciduous trees gain and lose leaves
+	- evergreens keep leaves year round
+	- grass tiles become snow
+
+	- micro biomes can be created after this, each polygon generating an evergreen, deciduous, or meadow micro biome
+
+	additionally:
+	- herbs and flowers should be rendered 'before', to appear under the player
+	- they should not collide, but maybe slow movement
+
+
+
+
+To Do Log:
+
+	add thirst, hunger, and temperature meters, drinking water
+
+	cooking
+
+	seasons update (described above)
+
+	fog changes colors based on temperature and effects
+
+	add experience levels: stones, sticks, plants
+
+	add wall and fire decay based on exp
+
+	stash buttons show picture of the item
+
+	limit storage
+
+	add rock throwing and stick swinging
+
+	add animals and meat and cooking
+
+	add procedural music generation, add sound effects
+
+	refactor and clean
+
+	add starting screen and menu, character select, name, saving, etc.
+
+Started But Not Finished:
+
+	temperature ( body temp, affected by day temp, moving, working, proximity to fire, and water )
+
+	add plants ( roots and nuts, different kinds and stages affected by seasons )
+	
+	move items into stash window ( limiting holding space )
+
+	infinite world ( polygon generation should consider neighboring world fragments )
+
+	add (element based) fog layer, days, and time of day (show day / time of day better, somehow make circular shadow)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

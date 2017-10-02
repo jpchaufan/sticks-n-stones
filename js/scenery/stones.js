@@ -1,38 +1,62 @@
 var app = app || {};
 
-app.stonePiles = [];
-
-createStones = function(x, y){
-	app.stonePiles.push( sprite('stonePile', x, y, 28, 16) );
+createStones = function(x, y, wf){
+	 var stone =  sprite('stonePile', x, y, 28, 16);
+	 stone.wf = wf;
+	 stone.name = "Stone Pile";
+	 stone.contents = [{name: 'Stones', amount: 1+rand(3)}, ];
+	 stone.time = 0;
+	 return stone;
 }
 
-app.drawStonePiles = function(){
+app.renderStone = function(stonePile){
 	var img = app.imgs.stonePile;
-	for (var i = 0; i < app.stonePiles.length; i++) {
-		var stonePile = app.stonePiles[i];
-		if ( collides(stonePile, app.camera) ){
-			app.ctx.drawImage(img, stonePile.x-app.camera.x-2, stonePile.y-app.camera.y-11);
+	app.ctx.drawImage(img, stonePile.x-app.camera.x-2, stonePile.y-app.camera.y-11);
+}
+
+app.updateStone = function(stone, dt){
+	stone.time += dt*2*Math.random();
+	if ( stone.time > 25 ){
+		stone.time -= 25;
+		manageContents(stone, 'Stones', 1);
+	}
+}
+
+app.clickStonePile = function(stonePile){
+	openStash(stonePile);
+}
+
+app.makeWall = function(xPos, yPos){
+	var size = 10;
+	var x = Math.round(xPos/ size )* size - size/2 ;
+	var y = Math.round(yPos/ size )* size - size/2 ;
+	var wf = app.world.wfAtPos(x, y);
+	if ( !app.isWallAt(x, y, wf) && !collidesArray( {x: x, y: y, w: size, h: size}, app.world.collideables) ){
+		if ( !app.gameEvents.madeWall.status ){ say( app.gameEvents.madeWall.message ); app.gameEvents.madeWall.status = true; }
+		app.manageItems('Stones', -1);
+		var block = sprite('block', x, y,  size ,  size , '#424242');
+		wf.walls.push( block );	
+	}
+}
+
+app.isWallAt = function(x, y, wf){
+	for (var i = 0; i < wf.walls.length; i++) {
+		if ( wf.walls[i].x == x && wf.walls[i].y == y ){
+			return true;
 		}
 	};
 }
 
-app.clickStonePile = function(clickedOn){
-	if ( !app.gameEvents.pickedStones ){ say('stones... good!'); app.gameEvents.pickedStones = true; }
-		for (var i = 0; i < app.stonePiles.length; i++) {
-			var stonePile = app.stonePiles[i];
-			if ( stonePile === clickedOn ){
-				if ( itemStock('stones') < 200 ){
-					app.stonePiles.splice(i, 1); i--;
-					item('stones', Math.round( Math.random()*20+10 ))	
-				} else {
-					say('too many stones!');
-				}
-				
-			}
-		};
+app.destroyWall = function(sprite){
+	if (!sprite){ return; }
+	var wf = app.world.wfAtPos(sprite.x, sprite.y);
+	for (var i = 0; i < wf.walls.length; i++) {
+		var block = wf.walls[i];
+		if (block === sprite){
+			if ( !app.gameEvents.unmadeWall.status ){ say( app.gameEvents.unmadeWall.message ); app.gameEvents.unmadeWall.status = true; }
+			wf.walls.splice(i, 1);
+			app.manageItems('Stones', 1);
+			return;
+		}
+	};
 }
-
-// initial stone piles:
-createStones(app.world.w/2+80+rand(20), app.world.h/2-70+rand(20) );
-createStones(app.world.w/2-120+rand(20), app.world.h/2+rand(30));
-

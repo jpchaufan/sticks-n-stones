@@ -98,11 +98,11 @@ How Plants and Seasons Will Work:
 
 To Do Log:
 
-	add thirst, hunger, and temperature meters, drinking water
+	add seasonally affected sprites - oaks and pines
+
+	add thirst, hunger, and temperature, internally stored and expressed through Ug's speech, add drinking water and warming by fire
 
 	cooking
-
-	seasons update (described above)
 
 	fog changes colors based on temperature and effects
 
@@ -119,6 +119,8 @@ To Do Log:
 	add animals and meat and cooking
 
 	add procedural music generation, add sound effects
+
+	mouse cursor image, changes when hovering over clickables
 
 	refactor and clean
 

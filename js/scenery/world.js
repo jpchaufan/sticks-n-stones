@@ -1,6 +1,49 @@
 var app = app || {};
 app.assetsToLoad ++;
 
+app.biomes = {
+	rocky: {
+		name: 'rocky',
+		chance: 0.245,
+		tileType: 'dirt',
+		stoneChance: 0.015,
+		treeChance: 0,
+		herbChance: 0
+	},
+	meadow: {
+		name: 'meadow',
+		chance: 0.245,
+		tileType: 'grass',
+		stoneChance: 0.0002,
+		treeChance: 0,
+		herbChance: 0.0005
+	},
+	oaks: {
+		name: 'oaks',
+		chance: 0.245,
+		tileType: 'grass',
+		stoneChance: 0,
+		treeChance: 0.02,
+		herbChance: 0
+	},
+	pines: {
+		name: 'pines',
+		chance: 0.245,
+		tileType: 'dirt',
+		stoneChance: 0.002,
+		treeChance: 0,
+		herbChance: 0
+	},
+	water: { 
+		name: 'water',
+		chance: 0.02,
+		tileType: 'water',
+		stoneChance: 0,
+		treeChance: 0,
+		herbChance: 0
+	}
+}
+
 // there is a world, which has a grid, holding world fragments
 app.startPoint = {w: 24, h: 24};
 app.world = {
@@ -67,14 +110,12 @@ app.world = {
 			console.log('bottom right', x, y)
 			this.array.push( new WorldFragment(x, y) )
 		}
-
-
 	}
+	
 
 };
 
 
-//function tile(type, )
 
 
 
@@ -92,7 +133,7 @@ function WorldFragment(x, y){
 	this.trees = map[3];
 	this.campfires = [];
 	this.herbs = map[4];
-	this.caves = map[5];
+	//this.caves = map[5];
 }
 WorldFragment.prototype.getTileAt = function(x, y){
 	var tile, h, w;
@@ -116,11 +157,11 @@ WorldFragment.prototype.updateBefore = function(dt){
 	for (var h = 0; h < this.map.length; h++) {
 		for (var w = 0; w < this.map.length; w++) {
 			var square = this.map[h][w];
-			if (square.type == 'dirt') {
+			if (square.biome.tileType == 'dirt') {
 				c.drawImage(dirt, 0, 0, 32, 32, this.x + w*20 - cam.x, this.y + h*20 - cam.y, 20, 20);
-			} else if (square.type == 'water') {
+			} else if (square.biome.tileType == 'water') {
 				c.drawImage(water, 0, 0, 32, 32, this.x + w*20 - cam.x, this.y + h*20 - cam.y, 20, 20);
-			} else if (square.type == 'grass') {
+			} else if (square.biome.tileType == 'grass') {
 				c.drawImage(grass, 0, 0, 32, 32, this.x + w*20 - cam.x, this.y + h*20 - cam.y, 20, 20);
 			}
 			
@@ -174,44 +215,50 @@ function generateMap(x, y, wf){
 		return Math.sqrt(x*x+y*y);
 	}
 	function nearestCenterData(w, h){
-		var val, fertility, distance;
+		var val, fertility, distance, nearestCenter;
 		for (var i = 0; i < centers.length; i++) {
 			var center = centers[i];
 			var thisDist = distanceToCenter(w, h, center);
 			if (!distance || distance > thisDist){
 				distance = thisDist;
-				val = center.val;
+				biome = center.biome;
 				fertility = center.fertility;
+				centerTile = center.tile;
 			}
 		};
-		//modifiedFertility = Math.max(0, fertility/(distance/2));
-		//console.log(distance, fertility, modifiedFertility);
-		return [val, fertility]; // returns value and fertility modified by distance
+		return {biome: biome, fertility: fertility, center: centerTile}; 
 	}
 
 
-	var tileSize = 20, map = [], centers = [], centerChance = 0.02; grassChance = 0.5, waterChance = 0.02, water = [], caveChance = 0.01, caves = [];
-	// set center points
+	var tileSize = 20, map = [], centers = [], centerChance = 0.02; water = []; //, caveChance = 0.01, caves = [];
+	// set center points //
+	var biomes = app.biomes;
 	for (var h = 0; h < height; h++) {
 		map.push( [] );
 		for (var w = 0; w < width; w++) {
-			var value = 'dirt', chance = Math.random();
-			if ( chance < grassChance ){
-				value = 'grass';
-			} else if ( chance < grassChance + waterChance ){
-				value = 'water';
-			}
-			// else if ( Math.random() < caveChance ){
-			// 	caves.push( {x: w, y: h} );
-			// }
 
 			if ( Math.random() < centerChance || w == 0 && h == 0 ){
-				// if ( w == 0 && h == 0 ){ value = 'water'; }
-				var fertility = 1+rand(9)
-				centers.push({x: w, y: h, val: value, fertility: fertility});
-				map[h].push( {type: value, fertility: fertility, x: x+w*20, y: y+h*20, w: 20, h: 20} );
-				if ( value == 'water' ){ water.push( {x: x+w*20, y: y+h*20, w: 20, h: 20} ) }
-				if ( value == 'grass' && app.startPoint.x == undefined && w > 25 && w < 35 && h > 25 && h < 35 ){
+				var biome, chance = Math.random();
+				if ( chance < biomes.rocky.chance ){
+					biome = biomes.rocky;
+				} else if ( chance < biomes.rocky.chance + biomes.meadow.chance  ){
+					biome = biomes.meadow;
+				} else if ( chance < biomes.rocky.chance + biomes.meadow.chance + biomes.oaks.chance  ){
+					biome = biomes.oaks;
+				} else if ( chance < biomes.rocky.chance + biomes.meadow.chance + biomes.oaks.chance + biomes.pines.chance  ){
+					biome = biomes.pines;
+				} else if ( chance < biomes.rocky.chance + biomes.meadow.chance + biomes.oaks.chance + biomes.pines.chance + biomes.water.chance ){
+					biome = biomes.water;
+				} else {
+					console.log('ERROR HERE')
+				}
+
+				var fertility = 1+rand(9);
+				var tile = {biome: biome, fertility: fertility, x: x+w*20, y: y+h*20, w: 20, h: 20, magnitude: 1}
+				centers.push({x: w, y: h, biome: biome, fertility: fertility, tile: tile});
+				map[h].push( tile );
+				if ( biome.tileType == 'water' ){ water.push( {x: x+w*20, y: y+h*20, w: 20, h: 20} ) }
+				if ( biome.name == 'meadow' && app.startPoint.x == undefined && w > 25 && w < 35 && h > 25 && h < 35 ){
 					app.startPoint.x = x + w*20;
 					app.startPoint.y = y + h*20;
 					//console.log('app.startPoint', app.startPoint.x, app.startPoint.y, w, h)
@@ -222,31 +269,35 @@ function generateMap(x, y, wf){
 		};
 	};
 	// set polygon values
-	var stoneChance = 0.015, stones = [], treeChance = 0.005, trees = [], herbChance = 0.0001, herbs = [];
+	stones = [], treeChance = 0.005, trees = [], herbChance = 0.0001, herbs = [];
 	for (var h = 0; h < height; h++) {
 		for (var w = 0; w < width; w++) {
 			if ( !map[h][w] ){
 				var data = nearestCenterData(w, h);
-				var val = data[0];
-				var fertility = data[1]
-				map[h][w] = {type: val, fertility: data[1], x: x+w*20, y: y+h*20, w: 20, h: 20};
-				if ( val == 'water' ){
+				var biome = data.biome;
+				var fertility = data.fertility;
+				data.center.magnitude++;
+
+				map[h][w] = {biome: biome, fertility: fertility, center: data.center, x: x+w*20, y: y+h*20, w: 20, h: 20};
+				if ( biome.tileType == 'water' ){
 					water.push( {x: x+w*20, y: y+h*20, w: 20, h: 20} );
-				} else if ( val == 'grass' && Math.random() < stoneChance ){
+				} else if ( biome.stoneChance && Math.random() < biome.stoneChance ){
 					stones.push( createStones(x+w*20, y+h*20, wf) );
-				} else if ( val == 'dirt' && Math.random() < treeChance ){
+				} else if ( biome.treeChance && Math.random() < biome.treeChance ){
 					trees.push( createTree(x+w*20, y+h*20, wf) );
-				} else if ( val == 'grass' && Math.random() < fertility*fertility*herbChance ){
-					herbs.push( createHerb(x+w*20, y+h*20, wf) )
+				} else if ( biome.herbChance && Math.random() < fertility*fertility*biome.herbChance ){
+					herbs.push( createHerb(x+w*20, y+h*20, wf) );
 				}
 			}
 		};
 	};
-	return [map, water, stones, trees, herbs, caves];
+	return [map, water, stones, trees, herbs]; //, caves];
 }
 
 // ensure player has a starting spot
-while ( app.startPoint.x == undefined || collidesArray(app.startPoint, app.world.array[0].water.concat( app.world.array[0].stones )  ) ){
+while ( app.startPoint.x == undefined || collidesArray(app.startPoint, app.world.array[0].water.concat( app.world.array[0].stones )
+											.concat( app.world.array[0].herbs
+											.concat( app.world.array[0].trees ) )  ) ){
 	app.world.array = [new WorldFragment( -500, -500 )];
 	console.log('recreating failed starting world');
 }

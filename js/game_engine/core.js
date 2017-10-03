@@ -61,7 +61,7 @@ function createText(message, duration, x, y, style){
 	var oldTexts = document.getElementsByClassName('game-text');
 	if (oldTexts.length){
 		for (var i = 0; i < oldTexts.length; i++) {
-			oldTexts[i].style.bottom = +oldTexts[i].style.bottom.replace('px', '') + 30 + 'px';
+			oldTexts[i].style.bottom = +oldTexts[i].style.bottom.replace('px', '') + 35 + 'px';
 		};
 	}
 
@@ -94,7 +94,10 @@ function say(message){
 	createText(message, 2700,
 			window.innerWidth*0.5 - 6*message.length,
 			window.innerHeight/1.6,
-			{ color: "#3e3e3e", fontSize: "30px" });
+			{ color: "#3e3e3e", fontSize: "30px", 
+				backgroundColor: 'rgba(255, 255, 255, 0.5)',
+				boxShadow: '0 0 5px 5px rgba(255, 255, 255, 0.5',
+				borderRadius: '10px' });
 }
 createText('Sticks and Stones', 2700,
 			window.innerWidth*0.3,

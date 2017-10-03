@@ -44,10 +44,14 @@ app.player.mouse = function(){
 	if ( ctrl.mousedown ){
 		var x = ctrl.x;
 		var y = ctrl.y;
-		// if (ctrl.status == 'click'){
-		// 	var wf = isPosInSprites( app.world.array, x, y );
-		// 	console.log( wf.getTileAt(x, y) );
-		// }
+		// for testing
+		if (ctrl.status == 'click'){
+			var wf = isPosInSprites( app.world.array, x, y );
+		if (!wf){ return }
+			var tile = wf.getTileAt(x, y);
+			console.log( tile.biome, tile.center.magnitude );
+		}
+		//
 		var dist = distanceTo(this, x, y);
 		var clickedOn = ctrl.clickedOn;
 		if ( clickedOn ){ // console.log(clickedOn.type)
@@ -95,9 +99,9 @@ app.player.mouse = function(){
 			}
 		} else if ( (dist > 20 && dist < 72) ){
 			if ( this.selecting ){
-				if ( this.selecting.name == 'Stones' ){
+				if ( this.selecting.name == 'Stone' ){
 					app.makeWall( x, y );	
-				} else if ( this.selecting.name == 'Sticks' && ctrl.status == 'click' ){
+				} else if ( this.selecting.name == 'Stick' && ctrl.status == 'click' ){
 					app.makeFire( x, y );	
 				}
 			}

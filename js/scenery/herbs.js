@@ -1,7 +1,7 @@
 var app = app || {};
 
 createHerb = function(x, y, wf){
-	var herb =  sprite('herb', x, y, 23, 10);
+	var herb =  sprite('herb', x, y, 11, 10);
 	herb.wf = wf;
 	herb.name = "Herb";
 	herb.contents = [{name: 'Leaf', amount: 1+rand(1)}, ];
@@ -12,7 +12,7 @@ createHerb = function(x, y, wf){
 app.renderHerb = function(herb){
 	var img = app.imgs.herb;
 	if ( collides(herb, app.camera) ){
-		app.ctx.drawImage(img, herb.x-app.camera.x, herb.y-app.camera.y-13);
+		app.ctx.drawImage(img, herb.x-app.camera.x-6, herb.y-app.camera.y-13);
 	}
 }
 

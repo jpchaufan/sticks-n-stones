@@ -4,7 +4,7 @@ createTree = function(x, y, wf){
 	var tree =  sprite('tree', x, y, 30, 28);
 	tree.wf = wf;
 	tree.name = "Tree";
-	tree.contents = [{name: 'Sticks', amount: 1+rand(3)}, ];
+	tree.contents = [{name: 'Stick', amount: 1+rand(3)}, ];
 	tree.time = 0;
 	return tree;
 }
@@ -20,7 +20,7 @@ app.updateTree = function(tree, dt){
 	tree.time += dt*2*Math.random();
 	if ( tree.time > 25 ){
 		tree.time -= 25;
-		manageContents(tree, 'Sticks', 1);
+		manageContents(tree, 'Stick', 1);
 		var fertility = tree.wf.getTileAt(tree.x, tree.y).fertility;
 		var fruitChance = fertility/10;
 		if (Math.random() < fruitChance){
@@ -39,7 +39,7 @@ app.makeFire = function(xPos, yPos){
 	var wf = app.world.wfAtPos(x, y);
 	if ( !collidesArray( {x: x, y: y, w: 20, h: 20}, app.world.collideables.concat([app.player]).concat(wf.campfires)) ){
 		if ( !app.gameEvents.madeFire.status ){ say(app.gameEvents.madeFire.message); app.gameEvents.madeFire.status = true; }
-		app.manageItems('Sticks', -1);
+		app.manageItems('Stick', -1);
 		var campfire = sprite('campfire', x, y,  20 ,  20);
 		campfire.anim = 0;
 		wf.campfires.push( campfire );	

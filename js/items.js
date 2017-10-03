@@ -83,8 +83,8 @@ app.manageItems = function(item, amt){
 		var elem = createUI(80+40*items.length, null, 40, 40);
 		elem.style.bottom = '0';
 		elem.style.backgroundColor = '#e0e0e0';
-		if (item == 'Stones'){ elem.style.backgroundImage = "url('imgs/stone.png')"; }
-		if (item == 'Sticks'){ elem.style.backgroundImage = "url('imgs/stick.png')"; }
+		if (item == 'Stone'){ elem.style.backgroundImage = "url('imgs/stone.png')"; }
+		if (item == 'Stick'){ elem.style.backgroundImage = "url('imgs/stick.png')"; }
 		if (item == 'Pear'){ elem.style.backgroundImage = "url('imgs/pear.png')"; }
 		if (item == 'Leaf'){ elem.style.backgroundImage = "url('imgs/leaf.png')"; }
 		elem.style.backgroundRepeat = "no-repeat";

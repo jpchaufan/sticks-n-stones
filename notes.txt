@@ -3,7 +3,7 @@ Sticks and Stones
 A simple wilderness survival game
 
 features:
-	procedurally generated maps with caves and water.
+	procedurally generated maps with water.
 	procedurally generated music
 
 	health, hunger, thirst, and temperature meters
@@ -76,7 +76,7 @@ build plan:
 
 
 How Plants and Seasons Will Work:
-	- seasons will last 1 to 3 months ?
+	- seasons will last 1 month
 	- the temperature algorithm numbers will vary based on seasons / months
 
 	- plants can spawn during warm temps, such as spring and summer-like temps
@@ -98,51 +98,118 @@ How Plants and Seasons Will Work:
 
 To Do Log:
 
-	add seasonally affected sprites - oaks and pines
-
 	add thirst, hunger, and temperature, internally stored and expressed through Ug's speech, add drinking water and warming by fire
 
-	cooking
+		- thirst, hunger, temp, and hp are all max at 1 and multiplied together to calculate overall vitality score
+		- vitality score affects speed multiplicatively
+		- if vitality is 0 (which happens when any 1 health indicator hits 0), you die
+		- this encourages the player to stay healthy, as any imperfection in vitality means you walk slower and slower, till you die
 
-	fog changes colors based on temperature and effects
+		- high temp make you thirsty faster
+		- cold temp makes you hungry faster
+		- moving and working make you hungry and thirsty faster, and warm you up
 
-	add experience levels: stones, sticks, plants
+	tree GDD growth and fruit production
 
-	add wall and fire decay based on exp
+	takes time to start walls or fires
 
-	stash buttons show picture of the item
+	stash buttons show picture of the item, and you can choose how much to take
 
 	limit storage
 
+	re-add action button:
+		to attack with stick or stone,
+		to 'inspect' items and things, getting game hints
+		(or reverse buttons)
+
 	add rock throwing and stick swinging
 
-	add animals and meat and cooking
+	add animals and meat
+		passive animals (like rabbits or deer) - wander around and run away from player
+		defensive animals (like boars or coyotes or bears or buffalo) - wander around and fight when attacked
+		aggressive animals (like wolves or grizzlies) - wander around and chase player
+		hunter animals (like tigers or mountain lions) - chase player, out only at night and not near fire
+		other animals: birds, fish, fishing, spiders...
+
+	cooking
 
 	add procedural music generation, add sound effects
 
-	mouse cursor image, changes when hovering over clickables
+	mouse cursor image, changes when hovering over clickables, or maybe when selecting
 
 	refactor and clean
 
-	add starting screen and menu, character select, name, saving, etc.
+	add starting screen and pause menu, character select, name, saving, etc.
 
-Started But Not Finished:
+Possible Bonuses:
 
-	temperature ( body temp, affected by day temp, moving, working, proximity to fire, and water )
+	add caves:
+		procedurally generated 'side-rooms'
+		constant temperature of ~15
+		different resources and animals:
+			bats, spiders, metals, coal...
 
-	add plants ( roots and nuts, different kinds and stages affected by seasons )
+	add crafting: (items maybe lose durability when used)
+	stick and stone to make spear for fishing or fighting
+	stone and stone to make knife for crafting and fighting 
+	knife and plant for better harvest
+	knife and plant for gutting animal
+		- more meat
+		- possible other items: hide, bones, sinew, bladder / stomach
+
+	kill bird for feathers
+	feathers, sticks for arrow shafts, arrow shafts and stones for arrows
+	hide keeps you warm when held
+	stick, sinew for bow
+	wood chunk and knife for cup
+
+	possibly: stone and stone or bone shatter to make crafting pieces:
+		- stone or bone knife
+		- bone fishing hook
+		- stone or bone arrowhead
+		- stone or bone spear tip
+		- stone or bone axe-head or hoe-head
+
+
+		trapping small game (like rabbits)
+
+	seeds and planting
+
+
+
+
+
+Possibilities: 
 	
-	move items into stash window ( limiting holding space )
+	action buttons along right side:
+		when empty handed:
+			- hand icon: interacts with things
+			- eye icon: observes and notes things
+		when holding stick:
+			- stick icon: swing
+			- fire icon: build fire
+		when holding rock:
+			- rock icon: throw rock
+			- wall / build icon: build / unbuild wall
+		( alternative - no rock throwing or stick swinging, but make spears to attack ?? )
 
-	infinite world ( polygon generation should consider neighboring world fragments )
+		when holding food: 
+			- face + food icon: eat
+			- fire + food icon: cook
 
-	add (element based) fog layer, days, and time of day (show day / time of day better, somehow make circular shadow)
+			( possible crafting interface for simple crafting )
+		No buttons: 
+		 use action button (space bar) instead for second option
 
 
 
+		the more you carry the slower you go
 
+		mushrooms
 
+		items have weight and can make you slow and be dropped
 
+		add experience levels: stones, sticks, plants ??? maybe not
 
 
 

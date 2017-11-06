@@ -57,6 +57,10 @@ function enableDnD(elem){
 
 // Text //
 
+function capitalize(str){
+	return str[0].toUpperCase()+str.substring(1);
+}
+
 function createText(message, duration, x, y, style){
 	var oldTexts = document.getElementsByClassName('game-text');
 	if (oldTexts.length){
@@ -121,7 +125,7 @@ function collidesArray(sprite, array){
 	// checks collisions between a sprite and an array of sprites
 	for (var i = 0; i < array.length; i++) {
 		if ( collides( sprite, array[i] ) ){
-			return true;
+			return array[i];
 		}
 	};
 }

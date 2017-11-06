@@ -1,49 +1,6 @@
 var app = app || {};
 app.assetsToLoad ++;
 
-app.biomes = {
-	rocky: {
-		name: 'rocky',
-		chance: 0.245,
-		tileType: 'dirt',
-		stoneChance: 0.015,
-		treeChance: 0,
-		herbChance: 0
-	},
-	meadow: {
-		name: 'meadow',
-		chance: 0.245,
-		tileType: 'grass',
-		stoneChance: 0.0002,
-		treeChance: 0,
-		herbChance: 0.0005
-	},
-	oaks: {
-		name: 'oaks',
-		chance: 0.245,
-		tileType: 'grass',
-		stoneChance: 0,
-		treeChance: 0.02,
-		herbChance: 0
-	},
-	pines: {
-		name: 'pines',
-		chance: 0.245,
-		tileType: 'dirt',
-		stoneChance: 0.002,
-		treeChance: 0,
-		herbChance: 0
-	},
-	water: { 
-		name: 'water',
-		chance: 0.02,
-		tileType: 'water',
-		stoneChance: 0,
-		treeChance: 0,
-		herbChance: 0
-	}
-}
-
 // there is a world, which has a grid, holding world fragments
 app.startPoint = {w: 24, h: 24};
 app.world = {
@@ -57,7 +14,19 @@ app.world = {
 		this.collideables = [];
 		// update only world fragments colliding with camera
 		for (var i = 0; i < this.array.length; i++) {
-			var worldFrag = this.array[i];
+			var worldFrag = this.array[i], intensity;
+
+			// // update all campfires and walls
+			// for (var i = 0; i < worldFrag.campfires.length; i++) {
+			// 	intensity = worldFrag.campfires[i].intensity;
+			// 	intensity -= 1*dt;
+			// 	console.log(intensity);
+			// 	if (intensity <= 0){
+			// 		worldFrag.campfires.splice(i, 1); i--;
+			// 	}
+			// };
+
+
 			if ( collides(app.camera, worldFrag) ){ worldFrag.updateBefore(dt) }
 		};
 		app.player.update(dt)
@@ -147,25 +116,43 @@ WorldFragment.prototype.getTileAt = function(x, y){
 	};
 }
 WorldFragment.prototype.updateBefore = function(dt){
+
 	var world = app.world;
 	world.collideables = world.collideables.concat(this.water)
-						.concat(this.stones).concat(this.walls).concat(this.trees).concat(this.herbs);
-	world.clickables = world.clickables.concat(this.stones).concat(this.walls).concat(this.trees).concat(this.campfires).concat(this.herbs);
+						.concat(this.stones).concat(this.walls).concat(this.trees);//.concat(this.herbs);
+	world.clickables = world.clickables.concat(this.stones).concat(this.walls).concat(this.trees).concat(this.campfires).concat(this.herbs).concat(this.water);
 
 	var c = app.ctx, cam = app.camera, dirt = app.imgs.dirt, 
-	   water = app.imgs.water, grass = app.imgs.grass;
+	   water = app.imgs.water, grass = app.imgs.grass, snow = app.imgs.snow;
 	for (var h = 0; h < this.map.length; h++) {
 		for (var w = 0; w < this.map.length; w++) {
 			var square = this.map[h][w];
-			if (square.biome.tileType == 'dirt') {
-				c.drawImage(dirt, 0, 0, 32, 32, this.x + w*20 - cam.x, this.y + h*20 - cam.y, 20, 20);
-			} else if (square.biome.tileType == 'water') {
+			if (square.biome.tileType == 'water') {
 				c.drawImage(water, 0, 0, 32, 32, this.x + w*20 - cam.x, this.y + h*20 - cam.y, 20, 20);
-			} else if (square.biome.tileType == 'grass') {
+			}
+			else if (app.temp.current <= 0 ){
+				c.drawImage(snow, 0, 0, 32, 32, this.x + w*20 - cam.x, this.y + h*20 - cam.y, 20, 20);
+			}
+			else if (square.biome.tileType == 'grass' || square.biome.name == 'rocky' && app.season.current == 'summer' ) {
 				c.drawImage(grass, 0, 0, 32, 32, this.x + w*20 - cam.x, this.y + h*20 - cam.y, 20, 20);
 			}
-			
+			else if (square.biome.tileType == 'dirt') {
+				c.drawImage(dirt, 0, 0, 32, 32, this.x + w*20 - cam.x, this.y + h*20 - cam.y, 20, 20);
+			}
 		};
+	};
+	for (var i = 0; i < this.herbs.length; i++) {
+		var herb = this.herbs[i];
+		if ( herb.kill ){
+			herb.sq.obj = null;
+			var center = herb.sq.center || herb.sq;
+			center.herbCount--;
+			this.herbs.splice(i, 1);
+			i--;
+		} 
+		else if ( collides(herb, cam) ){
+			app.renderHerb(herb);
+		}
 	};
 }
 
@@ -178,31 +165,57 @@ WorldFragment.prototype.updateAfter = function(dt){
 			app.renderStone(stone);
 		}
 	};
-	for (var i = 0; i < this.trees.length; i++) {
-		var tree = this.trees[i];
-		app.updateTree(tree, dt);
-		if ( collides(tree, cam) ){
-			app.renderTree(tree);
-		}
-	};
-	for (var i = 0; i < this.herbs.length; i++) {
-		var herb = this.herbs[i];
-		app.updateHerb(herb, dt);
-		if ( collides(herb, cam) ){
-			app.renderHerb(herb);
-		}
-	};
 	for (var i = 0; i < this.walls.length; i++) {
 		var wall = this.walls[i];
 		if ( collides(wall, cam) ){
-			wall.draw();
+			wall.durability -= dt*0.02;
+			if (wall.durability <= 0){
+				this.walls.splice(i, 1);
+			}
+			app.renderWall(wall);
 		}
 	};
 	for (var i = 0; i < this.campfires.length; i++) {
 		var campfire = this.campfires[i];
 		if ( collides(campfire, cam) ){
+			campfire.intensity -= dt*0.07;
+			if (campfire.intensity <= 0){
+				this.campfires.splice(i, 1);
+			}
 			app.renderCampfire(campfire);
 		}
+	};
+	for (var i = 0; i < this.trees.length; i++) {
+		var tree = this.trees[i];
+		//app.updateTree(tree, dt);
+		if ( collides(tree, cam) ){
+			app.renderTree(tree);
+		}
+	};
+}
+
+WorldFragment.prototype.biomeHerbDensityFactor = function(sq){
+	var center = sq.center || sq;
+	var ratio = center.herbCount / center.magnitude;
+	if (ratio >= 0.7){ return 0 }
+	if (ratio > 0.35){ return ( (0.7 - ratio) / 0.35 ) };
+	if (ratio < 0.35){ return Math.abs(2 - (0.75 - ratio) / 0.35) }
+	return 1;
+
+}
+
+WorldFragment.prototype.herbsSpawn = function(){
+	for (var h = 0; h < this.map.length; h++) {
+		for (var w = 0; w < this.map[h].length; w++) {
+			var sq = this.map[h][w];
+			if (!sq.obj && sq.biome.herbChance && sq.biome.herbChance*sq.fertility*sq.fertility*this.biomeHerbDensityFactor(sq) > Math.random() ){
+				var center = sq.center || sq;
+				//console.log('ratio, factor', center.herbCount / center.magnitude, this.biomeHerbDensityFactor(sq))
+				var DGGboost = app.day % 84 * 5 * Math.random();
+				this.herbs.push( app.createHerb(this.x+w*20, this.y+h*20, this, sq.biome.herbType, sq, DGGboost) );
+				center.herbCount++;
+			}
+		};
 	};
 }
 
@@ -230,46 +243,49 @@ function generateMap(x, y, wf){
 	}
 
 
-	var tileSize = 20, map = [], centers = [], centerChance = 0.02; water = []; //, caveChance = 0.01, caves = [];
+	var tileSize = 20, map = [], centers = [], centerChance = 0.015; water = []; //, caveChance = 0.01, caves = [];
 	// set center points //
 	var biomes = app.biomes;
-	for (var h = 0; h < height; h++) {
-		map.push( [] );
-		for (var w = 0; w < width; w++) {
+	while (centers.length == 0){
+		for (var h = 0; h < height; h++) {
+			map.push( [] );
+			for (var w = 0; w < width; w++) {
 
-			if ( Math.random() < centerChance || w == 0 && h == 0 ){
-				var biome, chance = Math.random();
-				if ( chance < biomes.rocky.chance ){
-					biome = biomes.rocky;
-				} else if ( chance < biomes.rocky.chance + biomes.meadow.chance  ){
-					biome = biomes.meadow;
-				} else if ( chance < biomes.rocky.chance + biomes.meadow.chance + biomes.oaks.chance  ){
-					biome = biomes.oaks;
-				} else if ( chance < biomes.rocky.chance + biomes.meadow.chance + biomes.oaks.chance + biomes.pines.chance  ){
-					biome = biomes.pines;
-				} else if ( chance < biomes.rocky.chance + biomes.meadow.chance + biomes.oaks.chance + biomes.pines.chance + biomes.water.chance ){
-					biome = biomes.water;
+				if ( Math.random() < centerChance || w == 0 && h == 0 ){
+					var biome, chance = Math.random();
+					if ( chance < biomes.rocky.chance ){
+						biome = biomes.rocky;
+					} else if ( chance < biomes.rocky.chance + biomes.meadow.chance  ){
+						biome = biomes.meadow;
+						biome.herbType = app.plantTypes[rand(6)];
+					} else if ( chance < biomes.rocky.chance + biomes.meadow.chance + biomes.fruitTrees.chance  ){
+						biome = biomes.fruitTrees;
+					} else if ( chance < biomes.rocky.chance + biomes.meadow.chance + biomes.fruitTrees.chance + biomes.pines.chance  ){
+						biome = biomes.pines;
+					} else if ( chance < biomes.rocky.chance + biomes.meadow.chance + biomes.fruitTrees.chance + biomes.pines.chance + biomes.water.chance ){
+						biome = biomes.water;
+					} else {
+						console.log('ERROR');
+					}
+
+					var fertility = 7;//1+rand(9);
+					var tile = {biome: biome, fertility: fertility, x: x+w*20, y: y+h*20, w: 20, h: 20, magnitude: 1, herbCount: 0}
+					centers.push({x: w, y: h, biome: biome, fertility: fertility, tile: tile});
+					map[h].push( tile );
+					if ( biome.tileType == 'water' ){ water.push( {x: x+w*20, y: y+h*20, w: 20, h: 20, type: 'water'} ) }
+					if ( biome.name == 'meadow' && app.startPoint.x == undefined && w > 25 && w < 35 && h > 25 && h < 35 ){
+						app.startPoint.x = x + w*20;
+						app.startPoint.y = y + h*20;
+						//console.log('app.startPoint', app.startPoint.x, app.startPoint.y, w, h)
+					}
 				} else {
-					console.log('ERROR HERE')
+					map[h].push( null ); 
 				}
-
-				var fertility = 1+rand(9);
-				var tile = {biome: biome, fertility: fertility, x: x+w*20, y: y+h*20, w: 20, h: 20, magnitude: 1}
-				centers.push({x: w, y: h, biome: biome, fertility: fertility, tile: tile});
-				map[h].push( tile );
-				if ( biome.tileType == 'water' ){ water.push( {x: x+w*20, y: y+h*20, w: 20, h: 20} ) }
-				if ( biome.name == 'meadow' && app.startPoint.x == undefined && w > 25 && w < 35 && h > 25 && h < 35 ){
-					app.startPoint.x = x + w*20;
-					app.startPoint.y = y + h*20;
-					//console.log('app.startPoint', app.startPoint.x, app.startPoint.y, w, h)
-				}
-			} else {
-				map[h].push( null ); 
-			}
+			};
 		};
-	};
+	}
 	// set polygon values
-	stones = [], treeChance = 0.005, trees = [], herbChance = 0.0001, herbs = [];
+	var stones = [], trees = [], herbs = [];
 	for (var h = 0; h < height; h++) {
 		for (var w = 0; w < width; w++) {
 			if ( !map[h][w] ){
@@ -280,13 +296,22 @@ function generateMap(x, y, wf){
 
 				map[h][w] = {biome: biome, fertility: fertility, center: data.center, x: x+w*20, y: y+h*20, w: 20, h: 20};
 				if ( biome.tileType == 'water' ){
-					water.push( {x: x+w*20, y: y+h*20, w: 20, h: 20} );
-				} else if ( biome.stoneChance && Math.random() < biome.stoneChance ){
-					stones.push( createStones(x+w*20, y+h*20, wf) );
-				} else if ( biome.treeChance && Math.random() < biome.treeChance ){
-					trees.push( createTree(x+w*20, y+h*20, wf) );
-				} else if ( biome.herbChance && Math.random() < fertility*fertility*biome.herbChance ){
-					herbs.push( createHerb(x+w*20, y+h*20, wf) );
+					water.push( {x: x+w*20, y: y+h*20, w: 20, h: 20, type: 'water'} );
+				}
+				else if ( biome.stoneChance && Math.random() < biome.stoneChance ){
+					stones.push( app.createStones(x+w*20, y+h*20, wf) );
+				}
+				else if ( biome.fruitTreeChance && Math.random() < biome.fruitTreeChance ){
+					trees.push( app.createTree(x+w*20, y+h*20, wf, 'Fruit Tree') );
+				}
+				else if ( biome.pineTreeChance && Math.random() < biome.pineTreeChance ){
+					trees.push( app.createTree(x+w*20, y+h*20, wf, 'Pine Tree') );
+				}
+				else if ( biome.herbChance && app.temp.current >= biome.herbType.diesAt && Math.random() < fertility*fertility*biome.herbChance ){
+					var herb = app.createHerb(x+w*20, y+h*20, wf, biome.herbType, map[h][w], Math.random()*30 + app.day % 84 * 10 * Math.random());
+					herbs.push( herb );
+					map[h][w].obj = herb;
+					data.center.herbCount++;
 				}
 			}
 		};
@@ -319,6 +344,6 @@ function spriteAtPos(x, y){
 
 
 
-assetWasLoaded();
+app.assetWasLoaded();
 
 

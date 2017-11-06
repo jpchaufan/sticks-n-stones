@@ -12,7 +12,7 @@ app.camera.setTo = function(sprite){
 	this.y = sprite.y+sprite.h/2 - this.h/2;
 }
 
-function pointHome(){
+app.pointHome = function(){
 	var rot = angleTo(app.player, app.startPoint.x, app.startPoint.y)-0.5*3.14;
 	var deg = rot * 180 / 3.1418;
 	app.compass.elem.style.transform = 'rotate('+deg+'deg)';

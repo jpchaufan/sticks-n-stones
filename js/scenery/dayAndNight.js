@@ -1,5 +1,9 @@
 var app = app || {};
 
+(function(){
+
+
+
 // app.shade = function(){
 
 // 	var w = 4, h = 4, c = app.ctx, cw = app.canvas.width, ch = app.canvas.height, player = app.player, cam = app.camera, light = app.campfire, min = Math.min;
@@ -30,16 +34,17 @@ app.updateTime = function(dt){
 }
 
 app.season = {};
-app.season.array = ['winter', 'spring', 'summer', 'fall'];
-app.season.current;
-app.season.i = 0;
-app.season.veryHot;
-app.season.hot;
-app.season.cold;
-app.season.veryCold;
-app.season.dawn;
-app.season.dusk;
-app.season.update = function(){
+var season = app.season;
+season.array = ['winter', 'spring', 'summer', 'fall'];
+season.current;
+season.i = 0;
+season.veryHot;
+season.hot;
+season.cold;
+season.veryCold;
+season.dawn;
+season.dusk;
+season.update = function(){
 	if ( app.day % 21 == 0 || app.day == 1 ){
 		this.i = (this.i+1)%4;
 		this.current = this.array[this.i];
@@ -54,15 +59,15 @@ app.season.update = function(){
 	} else if ( this.current == 'winter' ){
 		this.veryHot = 5;
 		this.hot = 0;
-		this.cold = -10;
-		this.veryCold = -20;
+		this.cold = -14;
+		this.veryCold = -24;
 		this.dusk = 20;
 		this.dawn = 7;
 	} else if ( this.current == 'fall' ){
-		this.veryHot = 20;
-		this.hot = 15;
-		this.cold = 10;
-		this.veryCold = 5;
+		this.veryHot = 18;
+		this.hot = 13;
+		this.cold = 8;
+		this.veryCold = 2;
 		this.dusk = 21;
 		this.dawn = 6;
 	} else if ( this.current == 'summer' ){
@@ -74,21 +79,22 @@ app.season.update = function(){
 		this.dawn = 5;
 	}
 }
-app.season.update();
+season.update();
 
-app.temp = {}
-app.temp.hi = 20;
-app.temp.low = 15;
-app.temp.current;
-app.temp.calculate = function(hi, drop, time){
+app.temp = {};
+var temp = app.temp;
+temp.hi = 20;
+temp.low = 15;
+temp.current;
+temp.calculate = function(hi, drop, time){
 	var factor = Math.abs( time/12-1 );
 	return hi - drop*factor;
 }
-app.temp.update = function(){
+temp.update = function(){
 	this.current = this.calculate(this.hi, this.hi - this.low, app.hour);
 	//console.log('temp:', this.current);
 }
-app.temp.update();
+temp.update();
 
 app.darkness = createUI(0, 0, app.canvas.width, app.canvas.height);
 app.darkness.style.width = '100vw';
@@ -96,7 +102,7 @@ app.darkness.style.height = '100vh';
 document.body.appendChild(app.darkness);
 
 app.hourToDarkness = function(hour){
-	var intensity = 30, season = app.season;
+	var intensity = 30;
 
 	if (hour > 6 && hour < season.dusk){ return [5, 0]; } // day
 	else if (hour > season.dusk && hour < season.dusk+1){ // dusk
@@ -116,37 +122,56 @@ app.darkness.update = function(){
 	app.darkness.style.boxShadow = 'inset 0 0 '+darkness[0]+'vw '+darkness[1]+'vh black';	
 }
 
+app.plantGrowth = function(){
+	for (var i = 0; i < app.world.array.length; i++) {
+		var wf = app.world.array[i];
+		for (var j = 0; j < wf.herbs.length; j++) {
+			var herb = wf.herbs[j];
+			app.growHerb(herb);
+		};
+		for (var k = 0; k < wf.trees.length; k++) {
+			var tree = wf.trees[k];
+			app.growTree(tree);
+		};
+	};
+}
+
 
 app.nextDay = function(){
-	var season = this.season;
+	app.plantGrowth();
+	for (var i = 0; i < app.world.array.length; i++) {
+		var wf = app.world.array[i];
+		wf.herbsSpawn();
+	};
 	this.hour -= 24; this.day++;
-	if (this.temp.hi > season.veryHot){ this.temp.hi -= 3; } // really high, sure down
-	else if (this.temp.hi > season.hot){ this.temp.hi += ( Math.random() < 0.2 ? 1 : -2 ); } // high, probably down
-	else if (this.temp.hi < season.veryCold){ this.temp.hi += 3; } // really low, sure up
-	else if (this.temp.hi < season.cold){ this.temp.hi += ( Math.random() < 0.2 ? -1 : 2 ); } // low, probably up
-	else { this.temp.hi += ( Math.random() < 0.5 ? -1 : 1 ); } // 50 / 50
-	this.temp.low = this.temp.hi - 5 - rand(2);
-	app.season.update();
-	console.log(app.day, app.season.current, this.temp.hi, this.temp.low);
+	if (temp.hi > season.veryHot){ temp.hi -= 3; } // really high, sure down
+	else if (temp.hi > season.hot){ temp.hi += ( Math.random() < 0.2 ? 1 : -2 ); } // high, probably down
+	else if (temp.hi < season.veryCold){ temp.hi += 3; } // really low, sure up
+	else if (temp.hi < season.cold){ temp.hi += ( Math.random() < 0.2 ? -1 : 2 ); } // low, probably up
+	else { temp.hi += ( Math.random() < 0.5 ? -1 : 1 ); } // 50 / 50
+	temp.low = temp.hi - 5 - rand(2);
+	season.update();
+	//console.log(app.day, season.current, temp.hi, temp.low);
 }
 
 app.dayDisplay = createUI(undefined, 10);
-app.dayDisplay.style.left = undefined;
-app.dayDisplay.style.right = '10px';
-app.dayDisplay.style.fontSize = '18px';
-app.dayDisplay.style.color = '#fff';
-document.body.appendChild( app.dayDisplay );
-app.dayDisplay.update = function(){
-	app.dayDisplay.innerHTML = 'DAY '+ app.day + '<br/>'+ 
+var dayDisplay = app.dayDisplay;
+dayDisplay.style.left = undefined;
+dayDisplay.style.right = '10px';
+dayDisplay.style.fontSize = '18px';
+dayDisplay.style.color = '#fff';
+document.body.appendChild( dayDisplay );
+dayDisplay.update = function(){
+	dayDisplay.innerHTML = 'DAY '+ app.day + '<br/>'+ 
 		( app.hour < 13 ? Math.floor(app.hour)+' AM' : Math.floor(app.hour-12)+' PM' ) + '<br>' +
-		Math.round(app.temp.current)+' &deg;C';
+		Math.round(temp.current)+' &deg;C';
 }
-app.dayDisplay.update();
+dayDisplay.update();
 
 
 
 
 
-
+})();
 
 

@@ -16,7 +16,7 @@ document.addEventListener('keydown', function(e){
 	if (e.keyCode == KEY_RIGHT || e.keyCode == KEY_D){ ctrl.right = true; }
 	if (e.keyCode == KEY_UP || e.keyCode == KEY_W){ ctrl.up = true; }
 	if (e.keyCode == KEY_DOWN || e.keyCode == KEY_S){ ctrl.down = true; }
-	//if (e.keyCode == KEY_SPACE){ ctrl.action = true; }
+	if (e.keyCode == KEY_SPACE){ ctrl.action = true; }
 	if (e.keyCode == KEY_T){ runTest() }
 	
 	//console.log(e.keyCode)
@@ -28,7 +28,7 @@ document.addEventListener('keyup', function(e){
 	if (e.keyCode == KEY_RIGHT || e.keyCode == KEY_D){ ctrl.right = false; }
 	if (e.keyCode == KEY_UP || e.keyCode == KEY_W){ ctrl.up = false; }
 	if (e.keyCode == KEY_DOWN || e.keyCode == KEY_S){ ctrl.down = false; }
-	//if (e.keyCode == KEY_SPACE){ ctrl.action = false; }
+	if (e.keyCode == KEY_SPACE){ ctrl.action = false; }
 	
 	//console.log(e.keyCode)
 });
@@ -46,17 +46,28 @@ document.addEventListener('mousemove', function(e){
 	ctrl.status = 'dragging';
 });
 document.addEventListener('mousedown', function(e){
-	var ctrl = app.controller;
-	ctrl.mousedown = true;
-	var stretchX = app.canvas.offsetWidth / app.canvas.width
-	var stretchY = app.canvas.offsetHeight / app.canvas.height
-	var x = ( e.pageX - app.canvas.offsetLeft ) / stretchX ;
-	var y = ( e.pageY - app.canvas.offsetTop ) / stretchY ;
 
-	ctrl.x = x + app.camera.x;
-	ctrl.y = y + app.camera.y;
-	ctrl.clickedOn = spriteAtPos(ctrl.x, ctrl.y);
-	ctrl.status = 'click';
+	var ctrl = app.controller;
+	if (ctrl.action){
+		ctrl.rightClick(e);
+	} else {
+		var ctrl = app.controller;
+		ctrl.mousedown = true;
+		var stretchX = app.canvas.offsetWidth / app.canvas.width
+		var stretchY = app.canvas.offsetHeight / app.canvas.height
+		var x = ( e.pageX - app.canvas.offsetLeft ) / stretchX ;
+		var y = ( e.pageY - app.canvas.offsetTop ) / stretchY ;
+
+		ctrl.x = x + app.camera.x;
+		ctrl.y = y + app.camera.y;
+		ctrl.clickedOn = spriteAtPos(ctrl.x, ctrl.y);
+		ctrl.status = 'click';
+	}
+})
+document.addEventListener('contextmenu', function(e){
+	e.preventDefault();
+
+	app.controller.rightClick(e);
 })
 document.addEventListener('mouseup', function(e){
 	var ctrl = app.controller;
@@ -65,6 +76,20 @@ document.addEventListener('mouseup', function(e){
 	ctrl.draggedOn = null;
 	ctrl.status = null;
 })
+
+app.controller.rightClick = function(e){
+	var ctrl = app.controller;
+	var stretchX = app.canvas.offsetWidth / app.canvas.width
+	var stretchY = app.canvas.offsetHeight / app.canvas.height
+	var x = ( e.pageX - app.canvas.offsetLeft ) / stretchX ;
+	var y = ( e.pageY - app.canvas.offsetTop ) / stretchY ;
+
+	ctrl.x = x + app.camera.x;
+	ctrl.y = y + app.camera.y;
+	ctrl.clickedOn = spriteAtPos(ctrl.x, ctrl.y);
+	ctrl.status = 'rightclick';
+}
+
 
 
 

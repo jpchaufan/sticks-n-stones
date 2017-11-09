@@ -98,6 +98,8 @@ How Plants and Seasons Will Work:
 
 To Do Log:
 
+	better plant and food generation and availability
+
 	add thirst, hunger, and temperature, internally stored and expressed through Ug's speech, add drinking water and warming by fire
 
 		- thirst, hunger, temp, and hp are all max at 1 and multiplied together to calculate overall vitality score
@@ -117,7 +119,7 @@ To Do Log:
 
 	limit storage
 
-	re-add action button:
+	re-add action button: / right click
 		to attack with stick or stone,
 		to 'inspect' items and things, getting game hints
 		(or reverse buttons)

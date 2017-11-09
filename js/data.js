@@ -39,56 +39,78 @@ app.biomes = {
 app.items = {
 	stone: {
 		name: "Stone",
-		img: "imgs/stone.png"
+		img: "imgs/stone.png",
+		maxHold: 25,
+		maxStash: 150
 	},
 	stick: {
 		name: "Stick",
-		img: "imgs/stick.png"
+		img: "imgs/stick.png",
+		maxHold: 25,
+		maxStash: 150
 	},
 	leaf: {
 		name: "Leaf",
 		img: "imgs/leaf2.png",
-		edible: 1
+		edible: 1,
+		maxHold: 25,
+		maxStash: 15
 	},
 	tomato: {
 		name: "Tomato",
 		img: "imgs/tomato.png",
-		edible: 4
+		edible: 3,
+		maxHold: 10,
+		maxStash: 15
 	},
 	potato: {
 		name: "Potato",
 		img: "imgs/potato.png",
-		edible: 7
+		edible: 7,
+		maxHold: 9,
+		maxStash: 150
 	},
 	carrot: {
 		name: "Carrot",
 		img: "imgs/carrots.png",
-		edible: 5
+		edible: 4,
+		maxHold: 10,
+		maxStash: 150
 	},
 	artichoke: {
 		name: "Artichoke",
 		img: "imgs/artichoke.png",
-		edible: 7
+		edible: 7,
+		maxHold: 2,
+		maxStash: 5
 	},
 	pepper: {
 		name: "Pepper",
 		img: "imgs/peppers.png",
-		edible: 2
+		edible: 2,
+		maxHold: 10,
+		maxStash: 15
 	},
 	eggplant: {
 		name: "Eggplant",
 		img: "imgs/eggplant.png",
-		edible: 4
+		edible: 4,
+		maxHold: 12,
+		maxStash: 15
 	},
 	corn: {
 		name: "Corn",
 		img: "imgs/corn.png",
-		edible: 4
+		edible: 4,
+		maxHold: 12,
+		maxStash: 25
 	},
 	pear: {
 		name: "Pear",
 		img: "imgs/pear.png",
-		edible: 3
+		edible: 3,
+		maxHold: 7,
+		maxStash: 25
 	}
 };
 

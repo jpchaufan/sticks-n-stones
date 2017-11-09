@@ -8,7 +8,7 @@ var player = app.player, cam = app.camera, world = app.world;
 
 cam.setTo(player);
 
-player.speed = 300;
+player.speed = 150;
 player.direction = 'down';
 player.isMoving = false;
 player.anim = 0;
@@ -46,7 +46,16 @@ player.move = function(dt){
 player.mouse = function(){
 	if (this.noMove){ return }
 	var ctrl = app.controller;
-	if ( ctrl.mousedown ){
+	if (ctrl.status == 'rightclick'){
+		if (this.selecting){
+			say(this.selecting.data.name)
+		} else if (ctrl.clickedOn) {
+			this.doInspect(ctrl.clickedOn);
+		}
+
+
+		ctrl.status = '';
+	} else if ( ctrl.mousedown ){
 		var x = ctrl.x;
 		var y = ctrl.y;
 		// for testing
@@ -118,7 +127,7 @@ player.mouse = function(){
 									say("Enough stone...");
 								}
 							}
-							else if ( ctrl.status == 'dragging' ){ app.destroyWall(ctrl.draggedOn); }	
+							//else if ( ctrl.status == 'dragging' ){ app.destroyWall(ctrl.draggedOn); }	
 						}
 						else if ( this.selecting.data.name == 'Stick' ){
 							app.destroyWall(clickedOn);
@@ -140,8 +149,8 @@ player.mouse = function(){
 				}
 			}
 		}
+		ctrl.status = 'holding';
 	}
-	ctrl.status = 'holding';
 }
 
 player.eat = function(data){
@@ -150,6 +159,24 @@ player.eat = function(data){
 	app.manageItems(data, -1);
 	if (data.eatMessage){ say(data.eatMessage) }
 	else { say( 'Mmm, tasty '+data.name.toLowerCase()+ '!' ) }
+}
+
+player.doInspect = function(sprite){
+
+	if (sprite.inspect){ sprite.inspect(this, sprite) }
+	else { 
+		if (sprite.type == 'water'){
+			say("Fresh, water.")
+		} else {
+			say('this thing doesnt have an inspect - '+sprite.type);
+			console.log(sprite);
+		}
+
+		
+	}
+}
+player.inspect = function(){
+	say("I am just a lost soul in a great big world...")
 }
 
 player.action = function(){
@@ -346,9 +373,4 @@ player.update = function(dt){
 
 
 })();
-
-
-
-
-
 

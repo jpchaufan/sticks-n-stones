@@ -64,11 +64,17 @@ app.deselectAll = function(){	player.selecting = null;
 	};
 }
 
-app.manageItems = function(itemData, amt){
-	var i = app.findItem(itemData), items = player.items;
+app.manageItems = function(itemData, amt){ // manage player items in inventory
+	var i = app.findItem(itemData), items = player.items, leftovers = 0;
 	if ( i >= 0 ){
 		var item = items[i];
+		
 		item.amount += amt;
+		if ( item.amount > item.data.maxHold ){
+			leftovers = item.amount - item.data.maxHold;
+			item.amount = item.data.maxHold;
+		}
+
 		item.innerHTML = item.amount;
 		if (item.amount <= 0){
 			if (player.selecting == item){ player.selecting = null; }
@@ -89,6 +95,12 @@ app.manageItems = function(itemData, amt){
 		elem.style.backgroundSize = '70% 70%';
 		elem.style.backgroundPosition = '40% 100%';
 		elem.style.alignText = 'right';
+
+		if ( amt > itemData.maxHold ){
+			leftovers = amt - itemData.maxHold;
+			amt = itemData.maxHold;
+		}
+
 		elem.innerHTML = amt;
 		elem.addEventListener('click', function(){ app.clickItemIcon(elem) } )
 		elem.data = itemData;
@@ -98,6 +110,8 @@ app.manageItems = function(itemData, amt){
 		document.body.appendChild( elem );
 		//if (!player.selecting) { selectItem( elem ); }
 	}
+	if (leftovers){ say('Full!') }
+	return leftovers;
 }
 
 app.findItem = function(data){
@@ -108,12 +122,13 @@ app.findItem = function(data){
 }
 
 app.itemStock = function(name){
-	var i = app.findItem(name);
-	if (i >= 0){
-		return player.items[i].amount;	
-	} else {
-		return 0;
-	}
+	throw "itemStock function is being deleted soon"
+	// var i = app.findItem(name);
+	// if (i >= 0){
+	// 	return player.items[i].amount;	
+	// } else {
+	// 	return 0;
+	// }
 	
 }
 
@@ -141,7 +156,7 @@ stash.closeBtn.innerText = 'close';
 stash.closeBtn.addEventListener( 'click', function(){ app.closeStash() } );
 stash.appendChild( stash.closeBtn );
 
-app.manageContents = function(obj, data, amt, setTo){
+app.manageContents = function(obj, data, amt, setTo){ // manage contents of a world stash typeobject (like a rock or tree)
 	for (var i = 0; i < obj.contents.length; i++) {
 		var item = obj.contents[i];
 		//console.log('comparing ', item.name, name, '...');
@@ -187,8 +202,8 @@ stash.showItems = function(destroyOnTake){
 			var item = obj.contents[this.i]; // console.log('j, contents', j, obj.contents)
 			if ( !app.gameEvents.pickedStones.status && item.data.name == 'Stone' ){ say( app.gameEvents.pickedStones.message ); app.gameEvents.pickedStones.status = true; }
 			if ( !app.gameEvents.gotSticks.status && item.data.name == 'Stick' ){ say( app.gameEvents.gotSticks.message ); app.gameEvents.gotSticks.status = true; }
-			app.manageItems(item.data, item.amount);
-			app.manageContents(obj, item.data, -item.amount);
+			var leftovers = app.manageItems(item.data, item.amount);
+			app.manageContents(obj, item.data, -(item.amount-leftovers));
 			stash.contentDisplay.removeChild(this);
 			if (obj.contents.length == 0){ 
 				app.closeStash();

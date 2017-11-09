@@ -6,7 +6,16 @@ app.createStones = function(x, y, wf){
 	 stone.name = "Stone Pile";
 	 stone.contents = [{data: app.items.stone, amount: 1+rand(3)}, ];
 	 stone.time = 0;
+	 stone.inspect = app.inspectStone;
 	 return stone;
+}
+
+app.inspectStone = function(player, stone){
+	if (stone.contents.length > 0){
+		say('This rock has something behind it...');	
+	} else {
+		say('A sturdy rock.')
+	}
 }
 
 app.renderStone = function(stonePile){
@@ -44,7 +53,6 @@ app.renderWall = function(wall){
 	var c =app.ctx;
 	c.fillStyle = wall.color;
 	c.globalAlpha = 0.4 + 0.6*wall.durability/5;
-	console.log(wall.durability)
 	c.fillRect(wall.x - app.camera.x, wall.y - app.camera.y, wall.w, wall.h);
 	c.globalAlpha = 1;
 }

@@ -14,8 +14,17 @@ app.createTree = function(x, y, wf, name){
 	tree.GDD = 0;
 	tree.frame = 0;
 	tree.name = name;
+	tree.inspect = app.inspectTree;
 	//tree.time = 0;
 	return tree;
+}
+
+app.inspectTree = function(player, tree){
+	if (tree.name == 'Fruit Tree'){
+		say("It looks to be a fruit tree.")
+	} else if (tree.name == 'Pine Tree'){
+		say("It's a pine tree.")
+	}
 }
 
 app.renderTree = function(tree){

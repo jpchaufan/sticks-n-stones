@@ -108,7 +108,25 @@ app.createHerb = function(x, y, wf, variety, sq, GDD){
 	herb.wf = wf;
 	herb.name = "Herb";
 	herb.time = 0;
+	herb.inspect = app.inspectHerb;
 	return herb;
+}
+
+app.inspectHerb = function(player, herb){
+	switch(herb.stage){
+		case 0:
+			say("A tender young sprout.");
+			break;
+		case 1: 
+			say("A growing plant.");
+			break;
+		case 2: 
+			say("It must be a "+herb.name+" plant, it's almost ready!");
+			break;
+		case 3: 
+			say("A fully grown "+herb.name+" plant.");
+			break;
+	}
 }
 
 app.renderHerb = function(herb){

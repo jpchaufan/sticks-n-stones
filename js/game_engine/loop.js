@@ -8,13 +8,14 @@ app.loop = function(){
 	app.ctx.clearRect(0, 0, app.canvas.width, app.canvas.height);
 
 	app.world.update(dt);
+	app.updateThrown(dt);
 	
 	app.updateTime(dt);
 	app.darkness.update();
 	lastFrame = newFrame;
 }
 app.slowLoop = function(){
-	app.pointHome();
+	app.compass.pointHome();
 	app.dayDisplay.update();
 	app.temp.update();
 	app.checkForPlantDeath();

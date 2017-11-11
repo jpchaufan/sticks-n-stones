@@ -16,7 +16,7 @@ app.clickItemIcon = function(elem){
 				// add item to stash here
 				app.manageContents(stash.obj, elem.data, elem.amount);
 				stash.showItems();
-				document.body.removeChild( elem );
+				app.window.removeChild( elem );
 				
 				break;
 			}
@@ -78,7 +78,7 @@ app.manageItems = function(itemData, amt){ // manage player items in inventory
 		item.innerHTML = item.amount;
 		if (item.amount <= 0){
 			if (player.selecting == item){ player.selecting = null; }
-			document.body.removeChild( item );
+			app.window.removeChild( item );
 			items.splice(i, 1);
 			for (var j = i; j < items.length; j++) {
 				var item = items[j];
@@ -107,7 +107,7 @@ app.manageItems = function(itemData, amt){ // manage player items in inventory
 		elem.amount = amt;
 		elem.zIndex = 10;
 		items.push(elem)
-		document.body.appendChild( elem );
+		app.window.appendChild( elem );
 		//if (!player.selecting) { selectItem( elem ); }
 	}
 	if (leftovers){ say('Full!') }
@@ -182,7 +182,7 @@ app.openStash = function(obj, limit, destroyOnTake){
 	stash.limit = limit;
 	stash.isOpen = true;
 	stash.obj = obj;
-	document.body.appendChild( stash );
+	app.window.appendChild( stash );
 	stash.header.innerText = obj.name;
 	stash.showItems(destroyOnTake);
 	player.noMove = true;
@@ -224,7 +224,7 @@ app.removeFromStash = function(){}
 app.closeStash = function(){
 	stash.isOpen = false;
 	stash.obj = null;
-	document.body.removeChild( stash );
+	app.window.removeChild( stash );
 	stash.contentDisplay.innerHTML = '';
 	player.noMove = false;
 }

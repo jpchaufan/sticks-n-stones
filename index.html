@@ -6,10 +6,10 @@
 			* {
 				margin: 0;
 				padding: 0;
-				cursor: pointer;
 			}
-			body {
+			#gameWindow {
 				text-align: center;
+				cursor: pointer;
 			}
 			#canvas {
 				background-color: #8F7D5D;
@@ -23,7 +23,9 @@
 	style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;" 
  	unselectable="on"
  	>
-		<canvas id="canvas"></canvas>
+ 		<div id="gameWindow">
+			<canvas id="canvas"></canvas>
+		</div>
 		<script type="text/javascript" src="js/data.js"></script>
 		
 		<script type="text/javascript" src="js/game_engine/resourceLoader.js"></script>
@@ -38,9 +40,11 @@
 		<script type="text/javascript" src="js/scenery/herbs.js"></script>
 		<script type="text/javascript" src="js/scenery/world.js"></script>
 
+		<script type="text/javascript" src="js/compass.js"></script>
 		<script type="text/javascript" src="js/player.js"></script>
+		<script type="text/javascript" src="js/attacks.js"></script>
 		<script type="text/javascript" src="js/items.js"></script>
-		<script type="text/javascript" src="js/enemies.js"></script>
+		<!-- <script type="text/javascript" src="js/enemies.js"></script> -->
 
 		<script type="text/javascript" src="js/game_engine/loop.js"></script>
 	</body>

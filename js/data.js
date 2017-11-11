@@ -1,5 +1,7 @@
 var app = app || {};
 
+(function(){
+
 //////// BIOMES /////////
 app.biomes = {
 	rocky: {
@@ -41,13 +43,23 @@ app.items = {
 		name: "Stone",
 		img: "imgs/stone.png",
 		maxHold: 25,
-		maxStash: 150
+		maxStash: 150,
+		throwable: true,
+		throwImgName: 'stone',
+		throwSpeed: 1,
+		throwW: 32,
+		throwH: 32
 	},
 	stick: {
 		name: "Stick",
 		img: "imgs/stick.png",
 		maxHold: 25,
-		maxStash: 150
+		maxStash: 150,
+		throwable: true,
+		throwImgName: 'stick',
+		throwSpeed: 1,
+		throwW: 70,
+		throwH: 89
 	},
 	leaf: {
 		name: "Leaf",
@@ -115,3 +127,4 @@ app.items = {
 };
 
 
+})();

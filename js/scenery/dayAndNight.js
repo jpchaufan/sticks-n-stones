@@ -24,7 +24,7 @@ var app = app || {};
 // }
 
 app.day = 1;
-app.hour = 6;
+app.hour = 7;
 
 app.hoursPerSecond = 1 / 10;
 
@@ -97,14 +97,16 @@ temp.update = function(){
 temp.update();
 
 app.darkness = createUI(0, 0, app.canvas.width, app.canvas.height);
+app.darkness.style.pointerEvents = 'none';
+app.darkness.style.backgroundColor = 'transparent';
 app.darkness.style.width = '100vw';
 app.darkness.style.height = '100vh';
-document.body.appendChild(app.darkness);
+app.window.appendChild(app.darkness);
 
 app.hourToDarkness = function(hour){
 	var intensity = 30;
 
-	if (hour > 6 && hour < season.dusk){ return [5, 0]; } // day
+	if (hour > season.dawn+1 && hour < season.dusk){ return [5, 0];} // day
 	else if (hour > season.dusk && hour < season.dusk+1){ // dusk
 		if ( !app.gameEvents.nightComes.status ){ say( app.gameEvents.nightComes.message ); app.gameEvents.nightComes.status = true; }
 		var factor = hour-season.dusk;

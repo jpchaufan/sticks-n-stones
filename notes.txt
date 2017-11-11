@@ -98,7 +98,11 @@ How Plants and Seasons Will Work:
 
 To Do Log:
 
+	set compass point
+
 	better plant and food generation and availability
+
+	number keys are hotkeys for selecting in inventory
 
 	add thirst, hunger, and temperature, internally stored and expressed through Ug's speech, add drinking water and warming by fire
 
@@ -212,11 +216,4 @@ Possibilities:
 		items have weight and can make you slow and be dropped
 
 		add experience levels: stones, sticks, plants ??? maybe not
-
-
-
-
-
-
-
 

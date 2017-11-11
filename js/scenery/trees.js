@@ -136,4 +136,3 @@ app.renderCampfire = function(campfire){
 
 
 
-

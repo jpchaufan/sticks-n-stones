@@ -1,16 +1,17 @@
-
+"use strict"
 
 // Initialize //
 
 var app = app || {};
 
+app.window = document.getElementById('gameWindow');
 app.canvas = document.getElementById('canvas');
 app.canvas.width = Math.min(500, window.innerWidth);
 app.canvas.height = Math.min(300, window.innerHeight);
 var canvasW = app.canvas.width;
 var canvasH = app.canvas.height;
 
-app.ctx = canvas.getContext('2d'); 
+app.ctx = app.canvas.getContext('2d'); 
 
 // Sprites //
 
@@ -162,9 +163,39 @@ function angleTo(sprite, x, y){
 	return Math.atan2(sideY, sideX);
 }
 
+function getVelocities(sprite, x, y, speed){
+	// get the x and y vectors for an item moving from a sprite towards a point
+	var centerX = sprite.x + sprite.w/2;
+	var centerY = sprite.y + sprite.h/2;
+
+	var vectorX = x - centerX;
+	var vectorY = y - centerY;
+
+	var sideX = Math.abs(vectorX);
+	var sideY = Math.abs(vectorY);
+
+	var sum = sideX + sideY;
+
+	var velocityX = vectorX / sum * speed;
+	var velocityY = vectorY / sum * speed;
+
+	var direction;
+	if ( sideX > sideY ){
+		if (vectorX > 0){ direction = 'right' }
+		else { direction = 'left' }
+	} else {
+		if (vectorY > 0){ direction = 'down' }
+		else { direction = 'up' }
+	}
+
+	return [ velocityX, velocityY, direction ];
+}
+
 function rand(n){
 	return Math.round( Math.random()*n );
 }
+
+
 
 // Unused //
 

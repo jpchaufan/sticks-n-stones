@@ -8,47 +8,77 @@ var player = app.player, cam = app.camera, world = app.world;
 
 cam.setTo(player);
 
-player.speed = 150;
+player.speed = 120;
 player.direction = 'down';
 player.isMoving = false;
-player.anim = 0;
+player.walkingAnimationStep = 0;
+player.throwTime = 0.5;
+player.throwPower = 250;
+player.throwingAnimationStep = 0;
 
 player.move = function(dt){
-	if ( !this.alive || this.noMove){ return }
 	this.isMoving = false;
-	var currentSpeed = this.speed*dt*0.2 + 0.8*this.speed*this.vitality*dt
-	if (app.controller.left){ 
-		var possible = { x: this.x-currentSpeed, y: this.y, w: this.w, h: this.h }
+	if ( !this.alive || this.noMove || this.isThrowing ){ return }
+	var currentSpeed = this.speed*dt*0.2 + 0.8*this.speed*this.vitality*dt; ctrl = app.controller
+	if (ctrl.left){ 
+		var actualSpeed = Math.floor( ctrl.up || ctrl.down ? currentSpeed : currentSpeed * 1.41);
+		var possible = { x: this.x-actualSpeed, y: this.y, w: this.w, h: this.h }
 		if ( !collidesArray( possible, world.collideables ) ){
-			this.x -= currentSpeed; cam.x -= currentSpeed; this.direction = 'left'; this.isMoving = true;
+			this.x -= actualSpeed; cam.x -= actualSpeed; this.direction = 'left'; this.isMoving = true;
 		}
 	}
-	if (app.controller.right){ 
-		var possible = { x: this.x+currentSpeed, y: this.y, w: this.w, h: this.h }
+	if (ctrl.right){ 
+		var actualSpeed = Math.floor( ctrl.up || ctrl.down ? currentSpeed : currentSpeed * 1.41);
+		var possible = { x: this.x+actualSpeed, y: this.y, w: this.w, h: this.h }
 		if ( !collidesArray( possible, world.collideables ) ){
-			this.x += currentSpeed; cam.x += currentSpeed; this.direction = 'right'; this.isMoving = true;
+			this.x += actualSpeed; cam.x += actualSpeed; this.direction = 'right'; this.isMoving = true;
 		}
 	}
-	if (app.controller.up){ 
-		var possible = { x: this.x, y: this.y-currentSpeed, w: this.w, h: this.h }
+	if (ctrl.up){ 
+		var actualSpeed = Math.floor( ctrl.left || ctrl.right ? currentSpeed : currentSpeed * 1.41);
+		var possible = { x: this.x, y: this.y-actualSpeed, w: this.w, h: this.h }
 		if ( !collidesArray( possible, world.collideables ) ){
-			this.y -= currentSpeed; cam.y -= currentSpeed; this.direction = 'up'; this.isMoving = true;
+			this.y -= actualSpeed; cam.y -= actualSpeed; this.direction = 'up'; this.isMoving = true;
 		}
 	}
-	if (app.controller.down){ 
-		var possible = { x: this.x, y: this.y+currentSpeed, w: this.w, h: this.h }
+	if (ctrl.down){ 
+		var actualSpeed = Math.floor( ctrl.left || ctrl.right ? currentSpeed : currentSpeed * 1.41);
+		var possible = { x: this.x, y: this.y+actualSpeed, w: this.w, h: this.h }
 		if ( !collidesArray( possible, world.collideables ) ){
-			this.y += currentSpeed; cam.y += currentSpeed; this.direction = 'down'; this.isMoving = true;
+			this.y += actualSpeed; cam.y += actualSpeed; this.direction = 'down'; this.isMoving = true;
 		}
 	}
 }
+
+player.throw = function(itemData){
+	this.isThrowing = true;
+	this.throwingAnimationStep = this.throwTime;
+	app.manageItems(itemData, -1);
+	this.direction = app.throw(this, ctrl.x, ctrl.y, itemData);
+}
+
+
+
+///////////
 
 player.mouse = function(){
 	if (this.noMove){ return }
 	var ctrl = app.controller;
 	if (ctrl.status == 'rightclick'){
 		if (this.selecting){
-			say(this.selecting.data.name)
+			var sel = this.selecting.data.name;
+			if (this.selecting.data.throwable){
+				this.throw(this.selecting.data);
+			}
+			else if (sel == 'Stick'){
+				var x = ctrl.x;
+				var y = ctrl.y;
+				var angle = angleTo(this, x, y);
+				say('swing stick'+angle);
+			}
+			else {
+				say('selecting '+sel);
+			}
 		} else if (ctrl.clickedOn) {
 			this.doInspect(ctrl.clickedOn);
 		}
@@ -166,9 +196,9 @@ player.doInspect = function(sprite){
 	if (sprite.inspect){ sprite.inspect(this, sprite) }
 	else { 
 		if (sprite.type == 'water'){
-			say("Fresh, water.")
+			say("Fresh water.")
 		} else {
-			say('this thing doesnt have an inspect - '+sprite.type);
+			say('this thing doesn\'t have an inspect - '+sprite.type);
 			console.log(sprite);
 		}
 
@@ -176,7 +206,7 @@ player.doInspect = function(sprite){
 	}
 }
 player.inspect = function(){
-	say("I am just a lost soul in a great big world...")
+	say("It's me.")
 }
 
 player.action = function(){
@@ -192,22 +222,43 @@ player.action = function(){
 	// }
 }
 
-player.draw = function(){
+player.draw = function(dt){
 	var c = app.ctx, img = app.imgs.player;
-	if (this.isMoving){ 
-		if ( this.anim == 0 ){ this.anim = 4*8-1 } else { this.anim--; }
-	} else { this.anim = 0 }
-	var frame = Math.floor(this.anim/8);
-	if (this.direction == 'down'){
-		c.drawImage(img, (4+frame)*16, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
-	} else if (this.direction == 'up'){
-		c.drawImage(img, frame*16, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
-	} else if (this.direction == 'left'){
-		c.drawImage(img, frame*16, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
-	} else if (this.direction == 'right'){
-		c.drawImage(img, (4+frame)*16, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+	if (this.isThrowing){ // throwing
+		var frame = this.throwingAnimationStep <= this.throwTime*0.7 ? 1 : 0;
+		var position = ['left', 'right', 'up', 'down'].indexOf(this.direction);
+		c.drawImage(img, (frame+2*position)*16, 32, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		this.throwingAnimationStep -= dt;
+		if ( this.throwingAnimationStep <= 0 ){
+			this.isThrowing = false;
+		}
+		return;
 	}
-	
+	if (this.isMoving){ // walking
+		if ( this.walkingAnimationStep <= 0 ){ this.walkingAnimationStep = 4*8-1 } else { this.walkingAnimationStep--; }
+		var frame = Math.floor(this.walkingAnimationStep/8);
+		if (this.direction == 'down'){
+			c.drawImage(img, (4+frame)*16, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		} else if (this.direction == 'up'){
+			c.drawImage(img, frame*16, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		} else if (this.direction == 'left'){
+			c.drawImage(img, frame*16, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		} else if (this.direction == 'right'){
+			c.drawImage(img, (4+frame)*16, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		}
+		//console.log( 'walking', this.walkingAnimationStep, frame );
+		return;
+	} else { this.walkingAnimationStep = 0 }
+	// idle
+	if (this.direction == 'down'){
+			c.drawImage(img, 4*16, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		} else if (this.direction == 'up'){
+			c.drawImage(img, 0, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		} else if (this.direction == 'left'){
+			c.drawImage(img, 0, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		} else if (this.direction == 'right'){
+			c.drawImage(img, 4*16, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		}
 }
 
 // Condition
@@ -219,7 +270,7 @@ player.hunger = 1;
 player.thirst = 1;
 player.vitality = 1;
 player.getVit = function(){
-	this.vitality = this.health * ( this.temp <= 1 ? this.temp : 2 - this.temp) * this.thirst * this.hunger;
+	this.vitality = 0.25 + 0.75 * this.health * ( this.temp <= 1 ? this.temp : 2 - this.temp) * this.thirst * this.hunger;
 }
 player.monitorCondition = function(dt){
 	var temp = app.temp.current, x = dt / 1000;
@@ -249,41 +300,41 @@ player.monitorCondition = function(dt){
 player.healthBar = createUI(7, undefined, 106, 18, '#000000');
 var healthBar = player.healthBar;
 healthBar.style.bottom = '70px';
-document.body.appendChild(player.healthBar);
+app.window.appendChild(player.healthBar);
 player.healthMeter = createUI(10, undefined, 100, 12, '#ff0000');
 var healthMeter = player.healthMeter;
 healthMeter.style.bottom = '73px';
-document.body.appendChild(player.healthMeter);
+app.window.appendChild(player.healthMeter);
 
 // HUNGER
 player.hungerBar = createUI(7, undefined, 106, 18, '#000000');
 var hungerBar = player.hungerBar;
 hungerBar.style.bottom = '50px';
-document.body.appendChild(player.hungerBar);
+app.window.appendChild(player.hungerBar);
 player.hungerMeter = createUI(10, undefined, 100, 12, '#99bb55');
 var hungerMeter = player.hungerMeter;
 hungerMeter.style.bottom = '53px';
-document.body.appendChild(player.hungerMeter);
+app.window.appendChild(player.hungerMeter);
 
 // Thirst
 player.thirstBar = createUI(7, undefined, 106, 18, '#000000');
 var thirstBar = player.thirstBar;
 thirstBar.style.bottom = '30px';
-document.body.appendChild(player.thirstBar);
+app.window.appendChild(player.thirstBar);
 player.thirstMeter = createUI(10, undefined, 100, 12, '#8888bb');
 var thirstMeter = player.thirstMeter;
 thirstMeter.style.bottom = '33px';
-document.body.appendChild(player.thirstMeter);
+app.window.appendChild(player.thirstMeter);
 
 // Temp
 player.tempBar = createUI(7, undefined, 106, 18, '#000000');
 var tempBar = player.tempBar;
 tempBar.style.bottom = '10px';
-document.body.appendChild(player.tempBar);
+app.window.appendChild(player.tempBar);
 player.tempMeter = createUI(10, undefined, 100, 12, '#aa4444');
 var tempMeter = player.tempMeter;
 tempMeter.style.bottom = '13px';
-document.body.appendChild(player.tempMeter);
+app.window.appendChild(player.tempMeter);
 
 player.hurt = function(amt){
 	if ( !this.alive ){ return }
@@ -323,9 +374,10 @@ player.update = function(dt){
 	this.move(dt);
 	this.mouse();
 	//this.action();
-	this.draw();
+	this.draw(dt);
 	this.recover(this.baseRecover);
 }
+
 
 
 // // Health Bar

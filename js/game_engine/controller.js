@@ -1,5 +1,7 @@
 var app = app || {};
 
+(function(){
+
 app.controller = {};
 
 var KEY_LEFT = 37;   var KEY_A = 65;
@@ -9,6 +11,8 @@ var KEY_DOWN = 40;   var KEY_S = 83;
 var KEY_SPACE = 32;
 var KEY_P = 80;
 var KEY_T = 84;
+
+//app.canvas.addEventListener('click', function(){ alert('hi') })
 
 document.addEventListener('keydown', function(e){
 	var ctrl = app.controller;
@@ -46,7 +50,7 @@ document.addEventListener('mousemove', function(e){
 	ctrl.status = 'dragging';
 });
 document.addEventListener('mousedown', function(e){
-
+	console.log(e.which, e.button)
 	var ctrl = app.controller;
 	if (ctrl.action){
 		ctrl.rightClick(e);
@@ -93,3 +97,4 @@ app.controller.rightClick = function(e){
 
 
 
+})();

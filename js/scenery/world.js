@@ -1,16 +1,19 @@
 var app = app || {};
+
+app.worldFragSize = 1000;
+
 app.assetsToLoad ++;
 
 // there is a world, which has a grid, holding world fragments
 app.startPoint = {w: 24, h: 24};
 app.world = {
-	array: [new WorldFragment( -500, -500 )],
-	x: -500,
-	y: -500,
-	w: 500,
-	h: 500,
+	array: [new WorldFragment( -app.worldFragSize/2, -app.worldFragSize/2 )],
+	x: -app.worldFragSize/2,
+	y: -app.worldFragSize/2,
+	w: app.worldFragSize/2,
+	h: app.worldFragSize/2,
 	update: function(dt){
-		this.clickables = [app.player];
+		this.clickables = [app.player].concat(app.deer);
 		this.collideables = [];
 		// update only world fragments colliding with camera
 		for (var i = 0; i < this.array.length; i++) {
@@ -29,7 +32,15 @@ app.world = {
 
 			if ( collides(app.camera, worldFrag) ){ worldFrag.updateBefore(dt) }
 		};
-		app.player.update(dt)
+		//////////////////////////
+
+		app.player.update(dt);
+
+		app.updateThrown(dt);
+
+		app.updateAnimals(dt);
+
+		/////////////////////////
 		for (var i = 0; i < this.array.length; i++) {
 			var worldFrag = this.array[i];
 			if ( collides(app.camera, worldFrag) ){ worldFrag.updateAfter(dt) }
@@ -53,29 +64,29 @@ app.world = {
 		var cam = app.camera;
 		// top left
 		if ( !isPosInSprites(this.array, cam.x, cam.y) ){
-			var x = Math.floor( (cam.x+500)/1000 )*1000-500;
-			var y = Math.floor( (cam.y+500)/1000 )*1000-500;
+			var x = Math.floor( (cam.x+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
+			var y = Math.floor( (cam.y+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			console.log('top left', x, y)
 			this.array.push( new WorldFragment(x, y) )
 		}
 		// top right
 		if ( !isPosInSprites(this.array, cam.x+cam.w, cam.y) ){
-			var x = Math.ceil( (cam.x+500)/1000 )*1000-500;
-			var y = Math.floor( (cam.y+500)/1000 )*1000-500;
+			var x = Math.ceil( (cam.x+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
+			var y = Math.floor( (cam.y+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			console.log('top right', x, y)
 			this.array.push( new WorldFragment(x, y) )
 		}
 		// bottom left
 		if ( !isPosInSprites(this.array, cam.x, cam.y+cam.h) ){
-			var x = Math.floor( (cam.x+500)/1000 )*1000-500;
-			var y = Math.ceil( (cam.y+500)/1000 )*1000-500;
+			var x = Math.floor( (cam.x+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
+			var y = Math.ceil( (cam.y+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			console.log('bottom left', x, y)
 			this.array.push( new WorldFragment(x, y) )
 		}
 		// bottom right
 		if ( !isPosInSprites(this.array, cam.x+cam.w, cam.y+cam.h) ){
-			var x = Math.ceil( (cam.x+500)/1000 )*1000-500;
-			var y = Math.ceil( (cam.y+500)/1000 )*1000-500;
+			var x = Math.ceil( (cam.x+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
+			var y = Math.ceil( (cam.y+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			console.log('bottom right', x, y)
 			this.array.push( new WorldFragment(x, y) )
 		}
@@ -92,8 +103,8 @@ app.world = {
 function WorldFragment(x, y){
 	this.x = x;
  	this.y = y;
- 	this.w = 1000;
- 	this.h = 1000;
+ 	this.w = app.worldFragSize;
+ 	this.h = app.worldFragSize;
 	var map = generateMap(x, y, this);
 	this.map = map[0];
 	this.water = map[1];
@@ -221,7 +232,7 @@ WorldFragment.prototype.herbsSpawn = function(){
 
 function generateMap(x, y, wf){
 	var start = Date.now();
-	var width = 50, height = 50; // if tilseSize == 20, map w and h == 1000 px
+	var width = app.worldFragSize/20, height = app.worldFragSize/20; // if tilseSize == 20, map w and h == app.worldFragSize px
 	function distanceToCenter(w, h, center){
 		var x = Math.abs( w - center.x );
 		var y = Math.abs( h - center.y );
@@ -323,7 +334,7 @@ function generateMap(x, y, wf){
 while ( app.startPoint.x == undefined || collidesArray(app.startPoint, app.world.array[0].water.concat( app.world.array[0].stones )
 											.concat( app.world.array[0].herbs
 											.concat( app.world.array[0].trees ) )  ) ){
-	app.world.array = [new WorldFragment( -500, -500 )];
+	app.world.array = [new WorldFragment( -app.worldFragSize/2, -app.worldFragSize/2 )];
 	console.log('recreating failed starting world');
 }
 

@@ -3,7 +3,7 @@ var app = app || {};
 (function(){
 
 app.player = sprite('player', app.startPoint.x, app.startPoint.y, 24, 24);
-var player = app.player, cam = app.camera, world = app.world;
+var player = app.player, cam = app.camera, world = app.world, ctrl = app.controller;
 
 
 cam.setTo(player);
@@ -13,48 +13,74 @@ player.direction = 'down';
 player.isMoving = false;
 player.walkingAnimationStep = 0;
 player.throwTime = 0.5;
-player.throwPower = 250;
+player.throwPower = 350;
 player.throwingAnimationStep = 0;
+player.isStalking = false;
+
+player.stalking = 1.5;
+player.perception = 1.5;
 
 player.move = function(dt){
 	this.isMoving = false;
 	if ( !this.alive || this.noMove || this.isThrowing ){ return }
-	var currentSpeed = this.speed*dt*0.2 + 0.8*this.speed*this.vitality*dt; ctrl = app.controller
+	var currentSpeed;
+	if (this.isStalking){ 
+		currentSpeed = this.speed * dt * 0.4;
+	}
+	else {
+		currentSpeed = this.speed*dt*0.3 + 0.7*this.speed*this.vitality*dt;
+	}
 	if (ctrl.left){ 
-		var actualSpeed = Math.floor( ctrl.up || ctrl.down ? currentSpeed : currentSpeed * 1.41);
+		this.direction = 'left';
+		var actualSpeed = Math.floor( ctrl.up || ctrl.down ? currentSpeed : currentSpeed * 1.2);
 		var possible = { x: this.x-actualSpeed, y: this.y, w: this.w, h: this.h }
 		if ( !collidesArray( possible, world.collideables ) ){
-			this.x -= actualSpeed; cam.x -= actualSpeed; this.direction = 'left'; this.isMoving = true;
+			this.x -= actualSpeed; cam.x -= actualSpeed; this.isMoving = true;
 		}
 	}
 	if (ctrl.right){ 
-		var actualSpeed = Math.floor( ctrl.up || ctrl.down ? currentSpeed : currentSpeed * 1.41);
+		this.direction = 'right';
+		var actualSpeed = Math.floor( ctrl.up || ctrl.down ? currentSpeed : currentSpeed * 1.2);
 		var possible = { x: this.x+actualSpeed, y: this.y, w: this.w, h: this.h }
 		if ( !collidesArray( possible, world.collideables ) ){
-			this.x += actualSpeed; cam.x += actualSpeed; this.direction = 'right'; this.isMoving = true;
+			this.x += actualSpeed; cam.x += actualSpeed; this.isMoving = true;
 		}
 	}
 	if (ctrl.up){ 
-		var actualSpeed = Math.floor( ctrl.left || ctrl.right ? currentSpeed : currentSpeed * 1.41);
+		this.direction = 'up';
+		var actualSpeed = Math.floor( ctrl.left || ctrl.right ? currentSpeed : currentSpeed * 1.2);
 		var possible = { x: this.x, y: this.y-actualSpeed, w: this.w, h: this.h }
 		if ( !collidesArray( possible, world.collideables ) ){
-			this.y -= actualSpeed; cam.y -= actualSpeed; this.direction = 'up'; this.isMoving = true;
+			this.y -= actualSpeed; cam.y -= actualSpeed; this.isMoving = true;
 		}
 	}
 	if (ctrl.down){ 
-		var actualSpeed = Math.floor( ctrl.left || ctrl.right ? currentSpeed : currentSpeed * 1.41);
+		this.direction = 'down';
+		var actualSpeed = Math.floor( ctrl.left || ctrl.right ? currentSpeed : currentSpeed * 1.2);
 		var possible = { x: this.x, y: this.y+actualSpeed, w: this.w, h: this.h }
 		if ( !collidesArray( possible, world.collideables ) ){
-			this.y += actualSpeed; cam.y += actualSpeed; this.direction = 'down'; this.isMoving = true;
+			this.y += actualSpeed; cam.y += actualSpeed; this.isMoving = true;
 		}
 	}
 }
 
 player.throw = function(itemData){
+	this.isStalking = false;
+	this.walkingAnimationStep = 0;
+
 	this.isThrowing = true;
 	this.throwingAnimationStep = this.throwTime;
 	app.manageItems(itemData, -1);
 	this.direction = app.throw(this, ctrl.x, ctrl.y, itemData);
+}
+
+player.shift = function(){
+
+	if (ctrl.shift){
+		ctrl.shift = false;
+		this.isStalking = !this.isStalking;
+		this.walkingAnimationStep = 0;
+	}
 }
 
 
@@ -63,18 +89,13 @@ player.throw = function(itemData){
 
 player.mouse = function(){
 	if (this.noMove){ return }
-	var ctrl = app.controller;
 	if (ctrl.status == 'rightclick'){
 		if (this.selecting){
 			var sel = this.selecting.data.name;
 			if (this.selecting.data.throwable){
-				this.throw(this.selecting.data);
-			}
-			else if (sel == 'Stick'){
-				var x = ctrl.x;
-				var y = ctrl.y;
-				var angle = angleTo(this, x, y);
-				say('swing stick'+angle);
+				if (!this.isThrowing){
+					this.throw(this.selecting.data);
+				}
 			}
 			else {
 				say('selecting '+sel);
@@ -114,18 +135,18 @@ player.mouse = function(){
 					say('Mmm... Fire warm.');
 				}
 			} 
-			else if (clickedOn.type == 'player'){
-				if ( ctrl.status == 'click' ){
-					if (this.selecting){
-						var data = this.selecting.data;
-						if (data.edible){ 
-							this.eat(data);
-						}
-					}
-					else { say('Ug!'); }
-					 
+			else if (clickedOn.type == 'herb'){
+				if (ctrl.status == 'click'){
+					if (dist < 100){ app.clickHerb(clickedOn); } 
+					else { say('too far!'); }	
 				}
-			} 
+			}
+			else if (clickedOn.type == 'deer' || clickedOn.status == 'dead'){
+				if (ctrl.status == 'click'){
+					if (dist < 100){ app.skinAnimal(this, clickedOn); } 
+					else { say('too far!'); }	
+				}
+			}
 			else if (clickedOn.type == 'stonePile'){
 				if (ctrl.status == 'click'){
 					if (dist < 100){ app.clickStonePile(clickedOn); } 
@@ -170,6 +191,18 @@ player.mouse = function(){
 				say("Ug drink.");
 				this.thirst = 1;
 			}
+			else if (clickedOn.type == 'player'){
+				if ( ctrl.status == 'click' ){
+					if (this.selecting){
+						var data = this.selecting.data;
+						if (data.edible){ 
+							this.eat(data);
+						}
+					}
+					else { say('Ug!'); }
+					 
+				}
+			} 
 		} else if ( (dist > 20 && dist < 85) ){
 			if ( this.selecting ){
 				if ( this.selecting.data.name == 'Stone' ){
@@ -209,34 +242,23 @@ player.inspect = function(){
 	say("It's me.")
 }
 
-player.action = function(){
-	//  if ( app.controller.action ){
-	// 	var x = app.controller.x, y = app.controller.y;
-	// 	//var angle = angleTo(this, x, y);
-	// 	var spriteHere = spriteAtPos(x, y);
-	// 	if (spriteHere){
-	// 		if ( spriteHere.type == 'block' && distanceTo(this, x, y) < 80 ){
-	// 			app.destroyWall(spriteHere);
-	// 		}
-	// 	}
-	// }
-}
-
 player.draw = function(dt){
 	var c = app.ctx, img = app.imgs.player;
+	if (this.isStalking){ c.globalAlpha = 0.6 }
 	if (this.isThrowing){ // throwing
 		var frame = this.throwingAnimationStep <= this.throwTime*0.7 ? 1 : 0;
 		var position = ['left', 'right', 'up', 'down'].indexOf(this.direction);
-		c.drawImage(img, (frame+2*position)*16, 32, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+		c.drawImage(img, (frame+2*position)*16, 32, 16, 16, this.x-2 - cam.x, this.y - cam.y, this.w, this.h);	
 		this.throwingAnimationStep -= dt;
 		if ( this.throwingAnimationStep <= 0 ){
 			this.isThrowing = false;
 		}
-		return;
+		c.globalAlpha = 1; return;
 	}
 	if (this.isMoving){ // walking
-		if ( this.walkingAnimationStep <= 0 ){ this.walkingAnimationStep = 4*8-1 } else { this.walkingAnimationStep--; }
-		var frame = Math.floor(this.walkingAnimationStep/8);
+		var animSpeed = this.isStalking ? 18 : 8;
+		if ( this.walkingAnimationStep <= 0 ){ this.walkingAnimationStep = 4*animSpeed-1 } else { this.walkingAnimationStep--; }
+		var frame = Math.floor(this.walkingAnimationStep/animSpeed);
 		if (this.direction == 'down'){
 			c.drawImage(img, (4+frame)*16, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
 		} else if (this.direction == 'up'){
@@ -247,18 +269,19 @@ player.draw = function(dt){
 			c.drawImage(img, (4+frame)*16, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
 		}
 		//console.log( 'walking', this.walkingAnimationStep, frame );
-		return;
+		c.globalAlpha = 1; return;
 	} else { this.walkingAnimationStep = 0 }
 	// idle
 	if (this.direction == 'down'){
-			c.drawImage(img, 4*16, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
-		} else if (this.direction == 'up'){
-			c.drawImage(img, 0, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
-		} else if (this.direction == 'left'){
-			c.drawImage(img, 0, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
-		} else if (this.direction == 'right'){
-			c.drawImage(img, 4*16, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
-		}
+		c.drawImage(img, 4*16, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+	} else if (this.direction == 'up'){
+		c.drawImage(img, 0, 0, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+	} else if (this.direction == 'left'){
+		c.drawImage(img, 0, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+	} else if (this.direction == 'right'){
+		c.drawImage(img, 4*16, 16, 16, 16, this.x - cam.x, this.y - cam.y, this.w, this.h);	
+	}
+	c.globalAlpha = 1;
 }
 
 // Condition
@@ -367,61 +390,37 @@ player.recover = function(amt){
 	}
 }
 
-player.update = function(dt){
-	if ( !this.alive ){ return }
-	this.checkDeath();
-	this.monitorCondition(dt);
-	this.move(dt);
-	this.mouse();
-	//this.action();
-	this.draw(dt);
-	this.recover(this.baseRecover);
+// Select items
+
+player.selectHotkeysUpdate = function(){
+	var nums = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'zero'];
+	for (var i = 0; i < this.items.length; i++) {
+		if (ctrl[ nums[i] ] && this.items[i] ){
+			app.selectItem( this.items[i] );
+			ctrl[ nums[i] ] = false;
+		}
+	};
 }
 
 
 
-// // Health Bar
-// player.health = {};
-// player.health.w = 20;
-// player.health.h = 100;
-// player.health.x = 10;
-// player.health.y = app.canvas.height - player.health.h - 10;
-// player.health.margin = 3;
-// player.health.max = 100;
-// player.health.current = 100;
-// player.health.recover = 0.05;
 
-// player.hurt = function(amt){
-// 	if ( !this.alive ){ return }
-// 	this.health.current -= amt;
-// 	if (this.health.current <= 0){
-// 		this.health.current = 0;
-// 		say('you died!');
-// 		this.alive = false;
-// 	}
-// }
-// player.heal = function(amt){
-// 	this.health.current += amt;
-// 	if ( this.health.current > this.health.max ){
-// 		this.health.current = this.health.max;
-// 	}
-// }
 
-// player.health.draw = function(){
-// 	var c = app.ctx;
-// 	c.fillStyle = 'black';
-// 	c.fillRect( this.x - this.margin,
-// 					  this.y - this.margin,
-// 					  this.w + 2*this.margin,
-// 					  this.h + 2*this.margin
-// 					);
-// 	c.fillStyle = 'red';
-// 	c.fillRect( this.x,
-// 					  this.y + this.h * (this.max - this.current) / this.max,
-// 					  this.w,
-// 					  this.h * this.current / this.max
-// 					);
-// }
+
+player.update = function(dt){
+	if ( !this.alive ){ return }
+	this.checkDeath();
+	this.monitorCondition(dt);
+	this.shift();
+	this.move(dt);
+	this.mouse();
+	this.selectHotkeysUpdate();
+	this.draw(dt);
+	this.recover(this.baseRecover);
+
+	if (ctrl.q && app.stash.isOpen){ app.closeStash(); ctrl.q = false; }
+}
+
 
 
 })();

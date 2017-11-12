@@ -152,6 +152,14 @@ function distanceTo(sprite, x, y){
 	return Math.sqrt( sideX*sideX + sideY*sideY );
 }
 
+function distanceBetween(sprite, other){
+	// get distance between a sprite and a point
+	var x = other.x + other.w/2;
+	var y = other.y + other.h/2;
+
+	return distanceTo(sprite, x, y) - (other.w+other.h)/4;
+}
+
 function angleTo(sprite, x, y){
 	// get angle between a sprite and a point
 	var centerX = sprite.x + sprite.w/2;

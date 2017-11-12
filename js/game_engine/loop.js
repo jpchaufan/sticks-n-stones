@@ -4,11 +4,11 @@ var lastFrame = Date.now();
 app.loop = function(){
 	var newFrame = Date.now();
 	var dt = (newFrame - lastFrame)/1000;
-	app.playerUpdated = false;
+	
 	app.ctx.clearRect(0, 0, app.canvas.width, app.canvas.height);
 
 	app.world.update(dt);
-	app.updateThrown(dt);
+	
 	
 	app.updateTime(dt);
 	app.darkness.update();
@@ -63,10 +63,11 @@ app.addImages([
 	{name: 'artichoke', src: 'imgs/artichoke.png'},
 	{name: 'peppers', src: 'imgs/peppers.png'},
 	{name: 'eggplant', src: 'imgs/eggplant.png'},
-	{name: 'corn', src: 'imgs/corn.png'}
+	{name: 'corn', src: 'imgs/corn.png'},
+	{name: 'deer-male', src: 'imgs/deer-male.png'},
+	{name: 'deer-female', src: 'imgs/deer-female.png'},
+	{name: 'raw-meat', src: 'imgs/item_meat.png'}
 ]);
-
-
 
 
 

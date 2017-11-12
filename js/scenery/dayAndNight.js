@@ -106,15 +106,23 @@ app.window.appendChild(app.darkness);
 app.hourToDarkness = function(hour){
 	var intensity = 30;
 
-	if (hour > season.dawn+1 && hour < season.dusk){ return [5, 0];} // day
-	else if (hour > season.dusk && hour < season.dusk+1){ // dusk
+	if (hour > season.dawn+1 && hour < season.dusk){ 
+		app.time = 'day';
+		return [5, 0];
+	}
+	else if (hour > season.dusk && hour < season.dusk+1){
 		if ( !app.gameEvents.nightComes.status ){ say( app.gameEvents.nightComes.message ); app.gameEvents.nightComes.status = true; }
 		var factor = hour-season.dusk;
+		app.time = 'dusk';
 		return [ 5+5*factor, intensity*factor ];
 	} 
-	else if (hour > season.dusk+1 || hour < season.dawn){ return [10, intensity] } // night
-	else if (hour > season.dawn && hour < season.dawn+1){ // dawn
+	else if (hour > season.dusk+1 || hour < season.dawn){
+		app.time = 'night';
+		return [10, intensity];
+	}
+	else if (hour > season.dawn && hour < season.dawn+1){
 		var factor = hour-season.dawn;
+		app.time = 'dawn';
 		return [ 10 - 5*factor, intensity - intensity*factor ];
 	} 
 }

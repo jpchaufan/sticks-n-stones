@@ -152,7 +152,7 @@ stash.contentDisplay.style.backgroundColor = '#e4e4e4';
 stash.appendChild( stash.contentDisplay );
 stash.closeBtn = document.createElement('button');
 stash.closeBtn.style.padding = '3px 12px';
-stash.closeBtn.innerText = 'close';
+stash.closeBtn.innerText = 'Close (Q)';
 stash.closeBtn.addEventListener( 'click', function(){ app.closeStash() } );
 stash.appendChild( stash.closeBtn );
 
@@ -230,13 +230,7 @@ app.closeStash = function(){
 }
 
 app.runTest = function(){
-	console.log( player.items.map( function(el){ return el.name+', '+el.selected } ) );
-	console.log( stash.obj.contents )
-	// for (var i = 0; i < player.items.length; i++) {
-	// 	console.log(
-	// 		player.items[i].name
-	// 	)
-	// };
+	console.log( 'no test to run right now' );
 }
 
 })();

@@ -1,3 +1,32 @@
+Sticks and Stones is a game about nomadic wilderness survival and exploration.
+
+The player is a nomadic caveman exploring the world as a lone scout, who relies on his wits and skills, not high-quality equipment, to survive and explore the world.
+
+Scouting, tracking, hunting, and trapping allow the player to experience what hunting might have been like. The player is also on the receiving end at times, when large cats may stalk the player. 
+
+Foraging and gathering is also important, as the player must collect plant foods and materials for survival.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OLD NOTES
+
 Sticks and Stones
 
 A simple wilderness survival game

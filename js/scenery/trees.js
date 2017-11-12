@@ -115,6 +115,7 @@ app.makeFire = function(xPos, yPos){
 		var campfire = sprite('campfire', x, y,  20 ,  20);
 		campfire.anim = 0;
 		campfire.intensity = 1;
+		campfire.inspect = app.inspectCampfire;
 		wf.campfires.push( campfire );	
 	}
 }
@@ -133,6 +134,16 @@ app.renderCampfire = function(campfire){
 	}
 }
 
-
+app.inspectCampfire = function(player, campfire){
+	if (campfire.intensity >= 5){
+		say('The fire is blazing!');
+	} else if (campfire.intensity >= 3){
+		say('The fire is toasty.');
+	} else if (campfire.intensity >= 1.5){
+		say('The fire is mellow.');
+	} else {
+		say('The fire is almost out.');
+	}
+}
 
 

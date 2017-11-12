@@ -123,6 +123,12 @@ app.items = {
 		edible: 3,
 		maxHold: 7,
 		maxStash: 25
+	},
+	rawMeat: {
+		name: "Raw Meat",
+		img: "imgs/item_meat.png",
+		maxHold: 15,
+		maxStash: 25
 	}
 };
 

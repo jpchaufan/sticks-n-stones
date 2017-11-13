@@ -113,6 +113,7 @@ app.setupHelpMenu = function(){
 				' <p>  <b>Left Click</b> to interact </p> '+
 				' <p>  <b>Right Click or Space + Click</b> for secondary interaction </p> '+
 				' <p>  <b>shift</b> to stalk </p> '+
+				' <p>  <b>number keys</b> to quick-select items </p> '+
 				' <p>  <b>Q</b> to quick-close item stashes </p> '+
 				' <p>  <b>T or P</b> to pause / unpause </p></div> '+
 				' <h2 style="font-variant: small-caps" >  Test Version  </h2> '+

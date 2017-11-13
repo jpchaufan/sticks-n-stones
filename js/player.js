@@ -96,14 +96,15 @@ player.mouse = function(){
 	if (ctrl.status == 'rightclick'){
 		app.taskbar.close();
 		if (this.selecting){
-			var sel = this.selecting.data.name;
-			if (this.selecting.data.throwable){
+			var itemData = this.selecting.data;
+			if (itemData.throwable){
 				if (!this.isThrowing){
-					this.throw(this.selecting.data);
+					this.throw(itemData);
 				}
 			}
-			else {
-				say('selecting '+sel);
+			else if (itemData.edible){
+				app.task(function(){ app.player.eat(itemData); }, 1);
+				//say('selecting '+sel);
 			}
 		} else if (ctrl.clickedOn) {
 			this.doInspect(ctrl.clickedOn);
@@ -138,17 +139,19 @@ player.mouse = function(){
 					}	
 				}
 				else if ( this.selecting && this.selecting.data.cooked ){
-					if (clickedOn.intensity < 2.5){
-						say('The fire is not hot enough to cook');
-					} else if (clickedOn.intensity < 5){
-						var product = app.items[this.selecting.data.cooked];
-						app.manageItems(this.selecting.data, -1);
-						app.manageItems(product, 1);
-						say(product.name+'!');
-					} else {
-						app.manageItems(this.selecting.data, -1);
-						say('The fire was way too hot... it burned...')
-					}
+					app.task(function(){
+						if (clickedOn.intensity < 2){
+							say('The fire is not hot enough to cook');
+						} else if (clickedOn.intensity < 4){
+							var product = app.items[app.player.selecting.data.cooked];
+							app.manageItems(app.player.selecting.data, -1);
+							app.manageItems(product, 1);
+							say(product.name+'!');
+						} else {
+							app.manageItems(app.player.selecting.data, -1);
+							say('The fire was way too hot... it burned...')
+						}
+					}, 1);
 					
 				}
 				else if (this.selecting ){
@@ -168,7 +171,7 @@ player.mouse = function(){
 			else if (clickedOn.type == 'deer' || clickedOn.status == 'dead'){
 				if (ctrl.status == 'click'){
 					if (dist < 100){
-						app.task( function(){ app.skinAnimal(this, clickedOn); }, 1 );
+						app.task( function(){ app.skinAnimal(app.player, clickedOn); }, 1 );
 					} 
 					else { say('too far!'); }	
 				}
@@ -222,15 +225,15 @@ player.mouse = function(){
 			else if ( clickedOn.type == 'water' && ctrl.status == 'click' ){
 				app.task(function(){
 					say("Ug drink.");
-					this.thirst = 1;
+					app.player.thirst = 1;
 				}, 1);
 			}
 			else if (clickedOn.type == 'player'){
 				if ( ctrl.status == 'click' ){
 					if (this.selecting){
-						var data = this.selecting.data;
-						if (data.edible){ 
-							app.task(function(){ this.eat(data); }, 1);
+						var itemData = this.selecting.data;
+						if (itemData.edible){ 
+							app.task(function(){ app.player.eat(itemData); }, 1);
 						}
 					}
 					else { say('Ug!'); }

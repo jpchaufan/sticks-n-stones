@@ -5,10 +5,10 @@ var app = app || {};
 
 app.controller = {};
 
-var KEY_LEFT = 370000;
-var KEY_RIGHT = 390000;
-var KEY_UP = 380000;
-var KEY_DOWN = 400000;
+var KEY_LEFT = 37;
+var KEY_RIGHT = 39;
+var KEY_UP = 38;
+var KEY_DOWN = 40;
 
 var KEY_A = 65;
 var KEY_D = 68;

@@ -5,7 +5,7 @@ app.assetsLoaded = 0;
 
 app.assetWasLoaded = function(){ 
 	app.assetsLoaded++;
-	console.log('assets loaded:', app.assetsLoaded, '/', app.assetsToLoad);
+	//console.log('assets loaded:', app.assetsLoaded, '/', app.assetsToLoad);
 	if ( app.assetsLoaded == app.assetsToLoad && app.startGame ){
 		app.startGame();
 	}

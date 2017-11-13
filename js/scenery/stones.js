@@ -80,39 +80,7 @@ app.destroyWall = function(sprite){
 	};
 }
 
-app.thrownStones = [];
-app.throwStone = function(thrower, x, y){
-	var cam = app.camera;
-	var stone = {};
-	stone.thrower = thrower;
-	stone.w = 12;
-	stone.h = 12;
-	stone.x = thrower.x - thrower.w/2 + stone.w;
-	stone.y = thrower.y - thrower.h/2 + stone.h;
-	var velocities = getVelocities(thrower, x, y, thrower.throwPower || 200);
-	stone.vx = velocities[0];
-	stone.vy = velocities[1];
-	stone.age = 0;
-	app.thrownStones.push( stone );
-	// return direction thrown
-	return velocities[2];
-}
 
-app.updateStonesThrown = function(dt){
-	var cam = app.camera;
-	for (var i = 0; i < app.thrownStones.length; i++) {
-		var stone = app.thrownStones[i];
-		stone.age += dt;
-		if ( stone.age <= 0.75 ){
-			stone.x += stone.vx*dt;
-			stone.y += stone.vy*dt;
-			app.ctx.drawImage(app.imgs.stone, 0, 0, 32, 32, stone.x - cam.x, stone.y - cam.y, stone.w, stone.h);	
-		} 
-		else {
-			app.thrownStones.splice(i, 1); i--;
-		}
-	};
-}
 
 
 

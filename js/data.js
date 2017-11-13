@@ -2,6 +2,25 @@ var app = app || {};
 
 (function(){
 
+
+
+//////// ANIMSLS ////////
+// each world fragment will get assigned an animal type, and has a chance of spawning animals of that type each day
+
+app.animalTypes = [
+	{
+		type: 'deer',
+		population: 2,
+		chance: 0.6
+	},
+	{
+		type: 'rodent',
+		population: 10,
+		chance: 0.8
+	}
+];
+
+
 //////// BIOMES /////////
 app.biomes = {
 	rocky: {
@@ -120,6 +139,13 @@ app.items = {
 	pear: {
 		name: "Pear",
 		img: "imgs/pear.png",
+		edible: 3,
+		maxHold: 7,
+		maxStash: 25
+	},
+	mushroom: {
+		name: "Mushroom",
+		img: "imgs/mushroom.png",
 		edible: 3,
 		maxHold: 7,
 		maxStash: 25

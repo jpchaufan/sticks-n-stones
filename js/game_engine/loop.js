@@ -66,7 +66,10 @@ app.addImages([
 	{name: 'corn', src: 'imgs/corn.png'},
 	{name: 'deer-male', src: 'imgs/deer-male.png'},
 	{name: 'deer-female', src: 'imgs/deer-female.png'},
-	{name: 'raw-meat', src: 'imgs/item_meat.png'}
+	{name: 'raw-meat', src: 'imgs/item_meat.png'},
+	{name: 'rodent', src: 'imgs/rat_0.png'},
+	{name: 'mushrooms', src: 'imgs/mushrooms.png'}
+
 ]);
 
 

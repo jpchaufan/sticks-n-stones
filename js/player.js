@@ -396,6 +396,7 @@ player.selectHotkeysUpdate = function(){
 	var nums = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'zero'];
 	for (var i = 0; i < this.items.length; i++) {
 		if (ctrl[ nums[i] ] && this.items[i] ){
+			app.deselectAll();
 			app.selectItem( this.items[i] );
 			ctrl[ nums[i] ] = false;
 		}

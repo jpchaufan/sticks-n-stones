@@ -208,7 +208,7 @@ stash.showItems = function(destroyOnTake){
 			if (obj.contents.length == 0){ 
 				app.closeStash();
 				if (destroyOnTake){
-					obj.kill = true;
+					obj.remove = true;
 				}
 			}
 			else { stash.showItems(); }

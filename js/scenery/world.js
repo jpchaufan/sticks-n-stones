@@ -13,7 +13,7 @@ app.world = {
 	w: app.worldFragSize/2,
 	h: app.worldFragSize/2,
 	update: function(dt){
-		this.clickables = [app.player].concat(app.deer);
+		this.clickables = [app.player].concat(app.deer).concat(app.rodents);
 		this.collideables = [];
 		// update only world fragments colliding with camera
 		for (var i = 0; i < this.array.length; i++) {
@@ -67,28 +67,36 @@ app.world = {
 			var x = Math.floor( (cam.x+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			var y = Math.floor( (cam.y+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			console.log('top left', x, y)
-			this.array.push( new WorldFragment(x, y) )
+			var newFrag = new WorldFragment(x, y);
+			app.animalSpawner( newFrag );
+			this.array.push( newFrag );
 		}
 		// top right
 		if ( !isPosInSprites(this.array, cam.x+cam.w, cam.y) ){
 			var x = Math.ceil( (cam.x+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			var y = Math.floor( (cam.y+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			console.log('top right', x, y)
-			this.array.push( new WorldFragment(x, y) )
+			var newFrag = new WorldFragment(x, y);
+			app.animalSpawner( newFrag );
+			this.array.push( newFrag );
 		}
 		// bottom left
 		if ( !isPosInSprites(this.array, cam.x, cam.y+cam.h) ){
 			var x = Math.floor( (cam.x+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			var y = Math.ceil( (cam.y+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			console.log('bottom left', x, y)
-			this.array.push( new WorldFragment(x, y) )
+			var newFrag = new WorldFragment(x, y);
+			app.animalSpawner( newFrag );
+			this.array.push( newFrag );
 		}
 		// bottom right
 		if ( !isPosInSprites(this.array, cam.x+cam.w, cam.y+cam.h) ){
 			var x = Math.ceil( (cam.x+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			var y = Math.ceil( (cam.y+app.worldFragSize/2)/app.worldFragSize )*app.worldFragSize-app.worldFragSize/2;
 			console.log('bottom right', x, y)
-			this.array.push( new WorldFragment(x, y) )
+			var newFrag = new WorldFragment(x, y);
+			app.animalSpawner( newFrag );
+			this.array.push( newFrag );
 		}
 	}
 	
@@ -114,6 +122,8 @@ function WorldFragment(x, y){
 	this.campfires = [];
 	this.herbs = map[4];
 	//this.caves = map[5];
+
+	this.animalType = app.animalTypes[ rand(app.animalTypes.length-1) ];
 }
 WorldFragment.prototype.getTileAt = function(x, y){
 	var tile, h, w;
@@ -154,7 +164,7 @@ WorldFragment.prototype.updateBefore = function(dt){
 	};
 	for (var i = 0; i < this.herbs.length; i++) {
 		var herb = this.herbs[i];
-		if ( herb.kill ){
+		if ( herb.remove ){
 			herb.sq.obj = null;
 			var center = herb.sq.center || herb.sq;
 			center.herbCount--;
@@ -179,7 +189,7 @@ WorldFragment.prototype.updateAfter = function(dt){
 	for (var i = 0; i < this.walls.length; i++) {
 		var wall = this.walls[i];
 		if ( collides(wall, cam) ){
-			wall.durability -= dt*0.02;
+			wall.durability -= dt*0.005;
 			if (wall.durability <= 0){
 				this.walls.splice(i, 1);
 			}

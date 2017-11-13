@@ -149,6 +149,7 @@ app.plantGrowth = function(){
 
 app.nextDay = function(){
 	app.plantGrowth();
+	app.animalController();
 	for (var i = 0; i < app.world.array.length; i++) {
 		var wf = app.world.array[i];
 		wf.herbsSpawn();

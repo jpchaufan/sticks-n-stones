@@ -28,6 +28,7 @@ app.startGame = function(){
 	app.setupDayDisplay();
 	app.setupCompass();
 	app.setupTaskbar();
+	app.setupPauseMenu();
 	setInterval( app.loop, 1000/30 );
 	setInterval( app.slowLoop, 250);
 
@@ -63,7 +64,7 @@ var skinColor = (function(){
 	app.loadingText = createUI(0, window.innerHeight*0.35, window.innerWidth, canvasH);
 	app.loadingText.style.fontSize = '120%'; //E9E6FF
 	app.loadingText.style.color = "#E9E6FF";
-	app.loadingText.innerHTML = '<h1 style="font-variant: small-caps; ">Sticks and Stones</h1><p>loading...</p>'
+	app.loadingText.innerHTML = '<h1 style="font-variant: small-caps; ">Sticks and Stones</h1><small>version '+app.version+' '+app.versionTag+'</small>';
 	app.window.appendChild(app.loadingText);
 	app.loadingBar = createUI(0, window.innerHeight*0.7, window.innerWidth, canvasH);
 	app.loadingBar.style.fontSize = '120%';

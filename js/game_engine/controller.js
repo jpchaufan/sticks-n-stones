@@ -38,7 +38,8 @@ document.addEventListener('keydown', function(e){
 	if (e.keyCode == KEY_UP || e.keyCode == KEY_W){ ctrl.up = true; }
 	if (e.keyCode == KEY_DOWN || e.keyCode == KEY_S){ ctrl.down = true; }
 	if (e.keyCode == KEY_SPACE){ ctrl.action = true; }
-	if (e.keyCode == KEY_T){ app.runTest() }
+	//if (e.keyCode == KEY_T){ app.runTest() }
+	if (e.keyCode == KEY_T || e.keyCode == KEY_P){ app.pauseGame() }
 
 	if (e.keyCode == KEY_Q){ ctrl.q = true; }
 

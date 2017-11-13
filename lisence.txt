@@ -1,0 +1,40 @@
+LISENCE:
+
+This early-version software is being developed exclusively and completely by its author, JP Chaufan Field, except for the graphics, and any audio that may later be added. No additional code engines or frameworks are being used in addition to simple HTML, CSS, and JavaScript code. 
+
+The design and ideas have all been developed exclusively the author, and a few of his close friends, mostly while working at the beautiful organic farm the author calls home.
+
+This game is currently unofficially called 'Sticks and Stones'. This name is temporary and unofficial, and may be changed. 
+
+
+!!!! Nobody other than the author may sell, distribute, modify, or claim ownership of this software, unless they have explicit and continued permission from the author. 
+
+
+Also, if anybody tries to pull any so-called legal mumbo-jumbo, or leverage loop-holes or superior legal knowledge over the author for any reason relating to this software in any conceivable way, the author reserves full right to defend himself in any manner that he judges to be necessary, effective, or reasonable. 
+
+This software is presented as-is, and by using it, you are agreeing to not sue or harm the author, or his friends or relatives, for any reason relating to this software, no matter what. You are agreeing to take responsibility for yourself. Also, you should probably make sure to take a break from the computer every now and then. But that is your own business.
+
+This license constitutes an official license, as designated to the standards of the personal home office of the author, which is an upside-down vegetable crate placed on the floor, before a yoga cushion, designed for hours of cross-legged typing action.
+
+
+A Huge thanks to https://opengameart.org/ for being an excellent and open source of game art. Almost all the art for this game comes directly from, or is a modification of artwork pulled from, opengameart.com. This thanks is explicitly extended to the following opengameart members:
+
+Daniel Eddeland
+https://opengameart.org/content/lpc-farming-tilesets-magic-animations-and-ui-elements
+
+Tree trunk by Johann C. Shoot'em up graphic kit: http://opengameart.org/content/lpc-a-shootem-up-complete-graphic-kit
+https://opengameart.org/content/lpc-all-seasons-apple-tree
+
+Deer by Calciumtrice, usable under Creative Commons Attribution 3.0 license.
+https://opengameart.org/content/deer
+
+Skylar1146
+https://opengameart.org/content/base-character-spritesheet-16x16
+
+krial
+https://opengameart.org/content/16x16-animated-campfire
+
+and many others.
+
+If you are interested in helping with the art or music for this game, I am open to collaboration.
+

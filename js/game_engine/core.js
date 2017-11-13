@@ -4,6 +4,9 @@
 
 var app = app || {};
 
+app.version = 0.1;
+app.versionTag = 'early testing';
+
 app.window = document.getElementById('gameWindow');
 app.canvas = document.getElementById('canvas');
 app.canvas.width = Math.min(500, window.innerWidth);

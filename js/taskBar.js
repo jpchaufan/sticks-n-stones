@@ -4,7 +4,7 @@ var app = app || {};
 
 app.setupTaskbar = function(){
 	var w = window.innerWidth, h = window.innerHeight;
-	app.taskbar = createUI(w/2-20, h/2-40, 40, 8, app.color3);
+	app.taskbar = createUI(w/2-20, h/2+40, 40, 8, app.color3);
 	app.taskbar.style.display = 'none';
 	app.taskbar.meter = createUI(1, 1, 38, 6, app.color1);
 	app.taskbar.appendChild(app.taskbar.meter);
@@ -14,7 +14,6 @@ app.setupTaskbar = function(){
 		app.taskbar.active = false;
 		app.taskbar.style.display = 'none';
 	}
-
 }
 
 app.task = function(callback, time){
@@ -37,9 +36,9 @@ app.updateTaskbar = function(dt){
 }
 
 
-app.runTest = function(){
-	app.pauseGame();
-}
+// app.runTest = function(){
+
+// }
 
 
 

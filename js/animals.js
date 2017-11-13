@@ -101,7 +101,7 @@ app.newDeer = function(x, y, gender){
 	deer.anim = 0;
 	deer.staggardCycle = 135+rand(40);
 	deer.steadyCycle = 5*5;
-	deer.speed = 150;
+	deer.speed = 170;
 	deer.perception = 1.5;
 	deer.runTimer = 0;
 	deer.runsFor = 0.6;
@@ -239,21 +239,14 @@ app.newRodent = function(x, y){
 	rodent.health = 1;
 	rodent.statusTimer = 0;
 
+	rodent.inspect = app.inspectRodent;
+
 	rodent.perception = 1.3;
-	rodent.speed = 120;
+	rodent.speed = 140;
+	rodent.runTime = 1.5;
 	rodent.anim = 0;
 	rodent.wanderTime = 1;
 	rodent.pauseTime = 0.7;
-
-	//rodent.inspect = app.inspectRodent;
-
-	// rodent.status = 'eating';
-	// 
-	// rodent.staggardCycle = 135+rand(40);
-	// rodent.steadyCycle = 5*5;
-	// ;
-	// rodent.runTimer = 0;
-	// rodent.runsFor = 0.6;
 
 	rodent.health = 1;
 
@@ -270,21 +263,15 @@ app.updateRodents = function(dt){
 
 		if (rodent.status != 'dead'){
 			app.animalCheckHit(rodent);
-			//rodent.statusTimer = (rodent.statusTimer -= dt < 0 ?  0 : rodent.statusTimer );
 			rodent.statusTimer -= dt;
-			//console.log(rodent.statusTimer)
 
 			var rodentIsActive = rodent.statusTimer > 0 || inView;
 
 			if (rodentIsActive){
-				//console.log('active rodent: dt', dt)
-				// console.log(rodent.statusTimer, dt)
 				if ( rodent.statusTimer > 0 ){ 
-					//console.log('timer > 0, do behavior - ', rodent.statusTimer);
 					if (rodent.status == 'running'){
 						app.preyRunFrom(rodent, app.player, dt);
 					} else if ( rodent.status == 'wander' ){
-						//console.log('rodent should be wandering here')
 						if (rodent.direction == 'right'){ rodent.x += rodent.speed/6*dt; }
 						if (rodent.direction == 'left'){ rodent.x -= rodent.speed/6*dt; }
 						if (rodent.direction == 'down'){ rodent.y += rodent.speed/6*dt; }
@@ -292,7 +279,6 @@ app.updateRodents = function(dt){
 					}
 				}
 				else { // timer is 0. reassess behavior
-					//console.log('timer <= 0, reassess')
 					
 					rodent.anim = 0;
 
@@ -316,14 +302,11 @@ app.updateRodents = function(dt){
 						
 					}
 					else {
-						//console.log('start running')
 						// start running
 						rodent.status = 'running';
-						rodent.statusTimer = 1;
+						rodent.statusTimer = rodent.runTime;
 					}
-					//console.log('behavior reassessed: ', rodent.status, rodent.statusTimer)
 				}
-
 			}
 		}
 
@@ -350,8 +333,9 @@ app.drawRodent = function(rodent){
 	c.drawImage(app.imgs.rodent, 32*frame, 32*yMod, 32, 32, rodent.x - cam.x, rodent.y - cam.y, rodent.w, rodent.h);
 }
 
-
-
+app.inspectRodent = function(player, rodent){
+	say('A fuzzy little rodent.')
+}
 
 
 app.skinAnimal = function(player, animal){

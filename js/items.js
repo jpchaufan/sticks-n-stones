@@ -28,7 +28,7 @@ app.clickItemIcon = function(elem){
 	} else if (!elem.selected){
 		app.deselectAll();
 		app.selectItem(elem);
-		say('It '+elem.data.name+'...');
+		say('It\'s '+elem.data.name+'...');
 	} else {
 		app.deselectAll();
 	}
@@ -54,8 +54,12 @@ player.selecting = null;
 
 app.deselect = function(item){
 	item.selected = false;
-	item.style.backgroundColor = '#e0e0e0';	
-	//item.style.color = '#000';
+	if (item.data.isCooked){
+		item.style.opacity = '0.8';
+		item.style.backgroundColor = '#E7D3B7';
+	} else {
+		item.style.backgroundColor = '#e0e0e0';
+	}
 }
 
 app.deselectAll = function(){	player.selecting = null;
@@ -89,7 +93,13 @@ app.manageItems = function(itemData, amt){ // manage player items in inventory
 		var image, offsetX;
 		var elem = createUI(130+40*items.length, null, 40, 40);
 		elem.style.bottom = '0';
-		elem.style.backgroundColor = '#e0e0e0';
+		if (itemData.isCooked){
+			elem.style.opacity = '0.8';
+			elem.style.backgroundColor = '#E7D3B7';
+		} else {
+			elem.style.backgroundColor = '#e0e0e0';
+		}
+		
 		elem.style.backgroundImage = "url("+itemData.img+")";
 		elem.style.backgroundRepeat = "no-repeat";
 		elem.style.backgroundSize = '70% 70%';

@@ -11,7 +11,7 @@ app.createStones = function(x, y, wf){
 }
 
 app.inspectStone = function(player, stone){
-	if (stone.contents.length > 0){
+	if (stone.contents.length > 1){
 		say('This rock has something behind it...');	
 	} else {
 		say('A sturdy rock.')
@@ -45,7 +45,19 @@ app.makeWall = function(xPos, yPos){
 		app.manageItems(app.items.stone, -1);
 		var block = sprite('block', x, y,  size ,  size , '#424242');
 		block.durability = 1;
+		block.inspect = app.inspectWall;
 		wf.walls.push( block );	
+	}
+}
+
+app.inspectWall = function(player, wall){
+	var dur = wall.durability;
+	if (dur > 4.5){
+		say('A very solid wall.')
+	} else if (dur > 3){
+		say('A sturdy stone wall.')
+	} else {
+		say('A minimal stone wall.')
 	}
 }
 

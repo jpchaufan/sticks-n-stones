@@ -123,7 +123,7 @@ player.mouse = function(){
 			if (clickedOn.type == 'campfire' && ctrl.status == 'click'){
 				if ( this.selecting && this.selecting.data.name == 'Stick' ) {
 					if (clickedOn.intensity < 4){
-						say("Add wood.");
+						say("Adding wood.");
 						clickedOn.intensity += 1;
 						app.manageItems(app.items.stick, -1);
 					}
@@ -131,8 +131,24 @@ player.mouse = function(){
 						say("Enough wood...");
 					}	
 				}
-				else {
-					say('Mmm... Fire warm.');
+				else if ( this.selecting && this.selecting.data.cooked ){
+					if (clickedOn.intensity < 2.5){
+						say('The fire is not hot enough to cook');
+					} else if (clickedOn.intensity < 5){
+						var product = app.items[this.selecting.data.cooked];
+						app.manageItems(this.selecting.data, -1);
+						app.manageItems(product, 1);
+						say(product.name+'!');
+					} else {
+						app.manageItems(this.selecting.data, -1);
+						say('The fire was way too hot... it burned...')
+					}
+					
+				}
+				else if (this.selecting ){
+					say('I\'m not putting this in the fire.');
+				} else {
+					say('Mmm... warm fire.');
 				}
 			} 
 			else if (clickedOn.type == 'herb'){
@@ -171,7 +187,7 @@ player.mouse = function(){
 						if ( this.selecting.data.name == 'Stone' ){
 							if ( ctrl.status == 'click' ){
 								if (clickedOn.durability < 5){
-									say("Add stone.");
+									say("Adding stone.");
 									clickedOn.durability += 1;
 									app.manageItems(app.items.stone, -1);
 								} else {
@@ -395,9 +411,14 @@ player.recover = function(amt){
 player.selectHotkeysUpdate = function(){
 	var nums = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'zero'];
 	for (var i = 0; i < this.items.length; i++) {
-		if (ctrl[ nums[i] ] && this.items[i] ){
-			app.deselectAll();
-			app.selectItem( this.items[i] );
+		var item = this.items[i];
+		if (ctrl[ nums[i] ] && item ){
+			if (item.selected){
+				app.deselectAll();
+			} else {
+				app.deselectAll();
+				app.selectItem( item );	
+			}
 			ctrl[ nums[i] ] = false;
 		}
 	};

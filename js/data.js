@@ -4,7 +4,7 @@ var app = app || {};
 
 
 
-//////// ANIMSLS ////////
+//////// ANIMALS ////////
 // each world fragment will get assigned an animal type, and has a chance of spawning animals of that type each day
 
 app.animalTypes = [
@@ -97,6 +97,14 @@ app.items = {
 	potato: {
 		name: "Potato",
 		img: "imgs/potato.png",
+		cooked: 'bakedPotato',
+		maxHold: 9,
+		maxStash: 150
+	},
+	bakedPotato: {
+		name: "Baked Potato",
+		img: "imgs/potato.png",
+		isCooked: true,
 		edible: 7,
 		maxHold: 9,
 		maxStash: 150
@@ -105,12 +113,31 @@ app.items = {
 		name: "Carrot",
 		img: "imgs/carrots.png",
 		edible: 4,
+		cooked: 'roastedCarrot',
+		maxHold: 10,
+		maxStash: 150
+	},
+	roastedCarrot: {
+		name: "Roasted Carrot",
+		img: "imgs/carrots.png",
+		isCooked: true,
+		edible: 5,
+		cooked: 'roastCarrot',
 		maxHold: 10,
 		maxStash: 150
 	},
 	artichoke: {
 		name: "Artichoke",
 		img: "imgs/artichoke.png",
+		cooked: 'grilledArtichoke',
+		edible: 6,
+		maxHold: 2,
+		maxStash: 5
+	},
+	grilledArtichoke: {
+		name: "Artichoke",
+		img: "imgs/artichoke.png",
+		isCooked: true,
 		edible: 7,
 		maxHold: 2,
 		maxStash: 5
@@ -125,13 +152,30 @@ app.items = {
 	eggplant: {
 		name: "Eggplant",
 		img: "imgs/eggplant.png",
-		edible: 4,
+		cooked: 'roastedEggplant',
+		maxHold: 12,
+		maxStash: 15
+	},
+	roastedEggplant: {
+		name: "Roasted Eggplant",
+		img: "imgs/eggplant.png",
+		isCooked: true,
+		edible: 6,
 		maxHold: 12,
 		maxStash: 15
 	},
 	corn: {
 		name: "Corn",
 		img: "imgs/corn.png",
+		edible: 4,
+		cooked: 'roastedCorn',
+		maxHold: 12,
+		maxStash: 25
+	},
+	roastedCorn: {
+		name: "Roasted Corn",
+		img: "imgs/corn.png",
+		isCooked: true,
 		edible: 4,
 		maxHold: 12,
 		maxStash: 25
@@ -143,7 +187,7 @@ app.items = {
 		maxHold: 7,
 		maxStash: 25
 	},
-	mushroom: {
+	mushroom: { // not implemented yet
 		name: "Mushroom",
 		img: "imgs/mushroom.png",
 		edible: 3,
@@ -153,9 +197,18 @@ app.items = {
 	rawMeat: {
 		name: "Raw Meat",
 		img: "imgs/item_meat.png",
+		cooked: 'grilledMeat',
 		maxHold: 15,
 		maxStash: 25
-	}
+	},
+	grilledMeat: {
+		name: "Grilled Meat",
+		img: "imgs/item_meat.png",
+		edible: 9,
+		isCooked: true,
+		maxHold: 15,
+		maxStash: 25
+	},
 };
 
 

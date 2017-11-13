@@ -332,22 +332,71 @@ player.vitality = 1;
 player.getVit = function(){
 	this.vitality = 0.25 + 0.75 * this.health * ( this.temp <= 1 ? this.temp : 2 - this.temp) * this.thirst * this.hunger;
 }
+
+player.monitorTemp = function(dt){
+	var bottomThreshhold = 10;
+	var topThreshhold = 30;
+	var effectiveTemp = this.effectiveTemperature();
+	var expectedTemp; // this is the temp that the player temp wants to move to.
+	if ( effectiveTemp < bottomThreshhold ){ 
+		var difference = bottomThreshhold - effectiveTemp;
+		var expectedTemp = 1 - difference*0.1;
+	} else if ( effectiveTemp > topThreshhold ){ 
+		var difference = effectiveTemp - topThreshhold;
+		var expectedTemp = 1 + difference*0.1;
+	} else {
+		expectedTemp = 1;
+	}
+	if ( this.temp > 0.01+expectedTemp ){
+		this.temp -= dt/3;
+	} else if ( this.temp < expectedTemp-0.01 ){
+		this.temp += dt/3;
+	} else {
+		this.temp = expectedTemp;
+	}
+}
+
+player.effectiveTemperature = function(){
+	// creates a 'box' around the player, which checks for collisions with heat sources like campfires
+	var box = {x: this.x-100, y: this.y-100, w: 200+this.w, h: 200+this.h};
+	// get campfires
+	var clickables = app.world.clickables;
+	var campfires = [];
+	for (var i = 0; i < clickables.length; i++) {
+		clickable = clickables[i]
+		if (clickable.type == 'campfire'){
+			if ( collides(clickable, box) ){
+				campfires.push( clickable );
+			}
+		}
+	};
+	var hottestFire = 0;
+	for (var i = 0; i < campfires.length; i++) {
+		var fire = campfires[i];
+		if (fire.intensity > hottestFire){
+			hottestFire = fire.intensity;
+		}
+	};
+	var effectiveTemp = app.temp.current + hottestFire*2;
+	if (hottestFire){
+		console.log('extra warmth from fire', app.temp.current, effectiveTemp)	
+	}
+	return effectiveTemp;
+}
 player.monitorCondition = function(dt){
 	var temp = app.temp.current, x = dt / 1000;
 	if (this.isMoving){
 		this.hunger -= x;
 		this.thirst -= 3*x;
-		this.temp += x;
 	} else {
 		this.hunger -= x/2;
 		this.thirst -= x;
 	}
-	if (temp > 25){
-		this.temp += ( temp - 25 ) * x/2;
-	} else if (temp < 15) {
-		this.temp -= Math.abs( temp - 15 ) * x/2;
+	if (temp > 30){
+		var diff = temp - 30;
+		this.thirst -= x * diff;
 	}
-	if (this.temp > 2){ this.temp = 2 }
+	player.monitorTemp(dt);
 	this.getVit();
 	this.healthMeter.style.width = this.health * 100 + 'px';
 	this.hungerMeter.style.width = this.hunger * 100 + 'px';

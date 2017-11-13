@@ -64,14 +64,14 @@ season.update = function(){
 		this.dusk = 20;
 		this.dawn = 7;
 	} else if ( this.current == 'fall' ){
-		this.veryHot = 18;
-		this.hot = 13;
-		this.cold = 8;
+		this.veryHot = 15;
+		this.hot = 10;
+		this.cold = 0;
 		this.veryCold = 2;
 		this.dusk = 21;
 		this.dawn = 6;
 	} else if ( this.current == 'summer' ){
-		this.veryHot = 37;
+		this.veryHot = 35;
 		this.hot = 33;
 		this.cold = 26;
 		this.veryCold = 18;

@@ -24,6 +24,22 @@ and associated bonuses and types of magic abilities
 
 
 
+next steps:
+
+Temperature Regulation System:
+
+1. if current temp is below a bottom threshhold of 10 C, the temp meter will turn blue and start to drop.
+2. it will drop by as much as 10% for each degree below threshhold that it is, and will drop faster, the bigger the difference
+EX. so if it is 6 C, it will drop to as low as 60%. 
+So, you can only die when it is at least 0 or less, since that would be enough to drop to 0% temp rating.
+
+3. doing certain things will affect the effective day temp effect on your body.
+EX. being near a fire will raise the effective degree by 2 for each level of intensity. Thus, a 0 C day will feel like 10 C if you are near a fire of intensity 5.
+
+
+
+
+
 
 
 

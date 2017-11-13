@@ -1,8 +1,8 @@
 var app = app || {};
 
-app.lastFrame = Date.now();
+app.lastFrame;
 app.loop = function(){
-	if ( app.isPaused ){ return; }
+	if ( app.isPaused){ return; }
 	var newFrame = Date.now();
 	var dt = (newFrame - app.lastFrame)/1000;
 	
@@ -16,7 +16,7 @@ app.loop = function(){
 	app.lastFrame = newFrame;
 }
 app.slowLoop = function(){
-	if ( app.isPaused ){ return; }
+	if ( app.isPaused){ return; }
 	app.compass.pointHome();
 	app.dayDisplay.update();
 	app.temp.update();
@@ -29,6 +29,7 @@ app.startGame = function(){
 	app.setupCompass();
 	app.setupTaskbar();
 	app.setupPauseMenu();
+	app.lastFrame = Date.now();
 	setInterval( app.loop, 1000/30 );
 	setInterval( app.slowLoop, 250);
 

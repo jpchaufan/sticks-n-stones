@@ -2,8 +2,6 @@ var app = app || {};
 
 app.worldFragSize = 1000;
 
-app.assetsToLoad ++;
-
 // there is a world, which has a grid, holding world fragments
 app.startPoint = {w: 24, h: 24};
 app.world = {
@@ -360,11 +358,5 @@ function spriteAtPos(x, y){
 	};
 }
 
-
-
-
-
-
-app.assetWasLoaded();
 
 

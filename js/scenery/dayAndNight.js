@@ -129,7 +129,7 @@ app.hourToDarkness = function(hour){
 
 app.darkness.update = function(){
 	var darkness = app.hourToDarkness( app.hour ) || [5, 0];
-	app.darkness.style.boxShadow = 'inset 0 0 '+darkness[0]+'vw '+darkness[1]+'vh black';	
+	app.darkness.style.boxShadow = 'inset 0 0 '+darkness[0]+'vw '+darkness[1]+'vh '+app.color3;	
 }
 
 app.plantGrowth = function(){
@@ -165,19 +165,21 @@ app.nextDay = function(){
 	//console.log(app.day, season.current, temp.hi, temp.low);
 }
 
-app.dayDisplay = createUI(undefined, 10);
-var dayDisplay = app.dayDisplay;
-dayDisplay.style.left = undefined;
-dayDisplay.style.right = '10px';
-dayDisplay.style.fontSize = '18px';
-dayDisplay.style.color = '#fff';
-document.body.appendChild( dayDisplay );
-dayDisplay.update = function(){
-	dayDisplay.innerHTML = 'DAY '+ app.day + '<br/>'+ 
-		( app.hour < 13 ? Math.floor(app.hour)+' AM' : Math.floor(app.hour-12)+' PM' ) + '<br>' +
-		Math.round(temp.current)+' &deg;C';
+app.setupDayDisplay = function(){
+	app.dayDisplay = createUI(undefined, 10);
+	var dayDisplay = app.dayDisplay;
+	dayDisplay.style.left = undefined;
+	dayDisplay.style.right = '10px';
+	dayDisplay.style.fontSize = '18px';
+	dayDisplay.style.color = '#fff';
+	document.body.appendChild( dayDisplay );
+	dayDisplay.update = function(){
+		dayDisplay.innerHTML = 'DAY '+ app.day + '<br/>'+ 
+			( app.hour < 13 ? Math.floor(app.hour)+' AM' : Math.floor(app.hour-12)+' PM' ) + '<br>' +
+			Math.round(temp.current)+' &deg;C';
+	}
+	dayDisplay.update();
 }
-dayDisplay.update();
 
 
 

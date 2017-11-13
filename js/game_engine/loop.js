@@ -1,20 +1,22 @@
 var app = app || {};
 
-var lastFrame = Date.now();
+app.lastFrame = Date.now();
 app.loop = function(){
+	if ( app.isPaused ){ return; }
 	var newFrame = Date.now();
-	var dt = (newFrame - lastFrame)/1000;
+	var dt = (newFrame - app.lastFrame)/1000;
 	
 	app.ctx.clearRect(0, 0, app.canvas.width, app.canvas.height);
 
 	app.world.update(dt);
-	
+	app.updateTaskbar(dt);
 	
 	app.updateTime(dt);
 	app.darkness.update();
-	lastFrame = newFrame;
+	app.lastFrame = newFrame;
 }
 app.slowLoop = function(){
+	if ( app.isPaused ){ return; }
 	app.compass.pointHome();
 	app.dayDisplay.update();
 	app.temp.update();
@@ -22,8 +24,26 @@ app.slowLoop = function(){
 	
 }
 app.startGame = function(){
+	app.player.setupBars();
+	app.setupDayDisplay();
+	app.setupCompass();
+	app.setupTaskbar();
 	setInterval( app.loop, 1000/30 );
 	setInterval( app.slowLoop, 250);
+
+	createText('Sticks and Stones', 2700,
+		window.innerWidth*0.3,
+		window.innerHeight/1.5,
+		{
+			color: "#3e3e3e",
+			fontSize: "40px",
+			fontVariant: "small-caps",
+			backgroundColor: 'rgba(255, 255, 255, 0.5)',
+			boxShadow: '0 0 5px 5px rgba(255, 255, 255, 0.5',
+			borderRadius: '10px'
+		});
+	app.gameStarted = true;
+	app.isPaused = false;
 }
 
 var skinColor = (function(){
@@ -36,6 +56,23 @@ var skinColor = (function(){
 		return 'black';
 	}
 })();
+
+// setup loading sequence
+
+(function(){
+	app.loadingText = createUI(0, window.innerHeight*0.35, window.innerWidth, canvasH);
+	app.loadingText.style.fontSize = '120%'; //E9E6FF
+	app.loadingText.style.color = "#E9E6FF";
+	app.loadingText.innerHTML = '<h1 style="font-variant: small-caps; ">Sticks and Stones</h1><p>loading...</p>'
+	app.window.appendChild(app.loadingText);
+	app.loadingBar = createUI(0, window.innerHeight*0.7, window.innerWidth, canvasH);
+	app.loadingBar.style.fontSize = '120%';
+	app.loadingBar.style.color = "#E9E6FF";
+	app.loadingBar.innerHTML = ''
+	app.window.appendChild(app.loadingBar);
+
+})();
+
 // run loader
 app.addImages([
 	{name: 'grass', src: 'imgs/grass1.png'},

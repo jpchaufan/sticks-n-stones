@@ -3,6 +3,14 @@ var app = app || {};
 (function(){
 
 
+////////  COLORS  /////////  https://coolors.co/3a723b-583e23-13262f-b0a084-e9e6ff
+app.color1 = '#3A723B' // '#73683B';
+app.color2 = '#583E23';
+app.color3 = '#13262F';
+app.color4 = '#B0A084';
+app.color5 = '#E9E6FF';
+
+
 
 //////// ANIMALS ////////
 // each world fragment will get assigned an animal type, and has a chance of spawning animals of that type each day

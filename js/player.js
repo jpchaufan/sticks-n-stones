@@ -31,6 +31,7 @@ player.move = function(dt){
 		currentSpeed = this.speed*dt*0.3 + 0.7*this.speed*this.vitality*dt;
 	}
 	if (ctrl.left){ 
+		app.taskbar.close();
 		this.direction = 'left';
 		var actualSpeed = Math.floor( ctrl.up || ctrl.down ? currentSpeed : currentSpeed * 1.2);
 		var possible = { x: this.x-actualSpeed, y: this.y, w: this.w, h: this.h }
@@ -39,6 +40,7 @@ player.move = function(dt){
 		}
 	}
 	if (ctrl.right){ 
+		app.taskbar.close();
 		this.direction = 'right';
 		var actualSpeed = Math.floor( ctrl.up || ctrl.down ? currentSpeed : currentSpeed * 1.2);
 		var possible = { x: this.x+actualSpeed, y: this.y, w: this.w, h: this.h }
@@ -47,6 +49,7 @@ player.move = function(dt){
 		}
 	}
 	if (ctrl.up){ 
+		app.taskbar.close();
 		this.direction = 'up';
 		var actualSpeed = Math.floor( ctrl.left || ctrl.right ? currentSpeed : currentSpeed * 1.2);
 		var possible = { x: this.x, y: this.y-actualSpeed, w: this.w, h: this.h }
@@ -55,6 +58,7 @@ player.move = function(dt){
 		}
 	}
 	if (ctrl.down){ 
+		app.taskbar.close();
 		this.direction = 'down';
 		var actualSpeed = Math.floor( ctrl.left || ctrl.right ? currentSpeed : currentSpeed * 1.2);
 		var possible = { x: this.x, y: this.y+actualSpeed, w: this.w, h: this.h }
@@ -90,6 +94,7 @@ player.shift = function(){
 player.mouse = function(){
 	if (this.noMove){ return }
 	if (ctrl.status == 'rightclick'){
+		app.taskbar.close();
 		if (this.selecting){
 			var sel = this.selecting.data.name;
 			if (this.selecting.data.throwable){
@@ -106,7 +111,8 @@ player.mouse = function(){
 
 
 		ctrl.status = '';
-	} else if ( ctrl.mousedown ){
+	} else if ( ctrl.mousedown && ctrl.status == 'click' ){ // test a bit before removing the click conditionals made redundant by this one here
+		app.taskbar.close();
 		var x = ctrl.x;
 		var y = ctrl.y;
 		// for testing
@@ -120,7 +126,7 @@ player.mouse = function(){
 		var dist = distanceTo(this, x, y);
 		var clickedOn = ctrl.clickedOn;
 		if ( clickedOn ){ // console.log(clickedOn.type)
-			if (clickedOn.type == 'campfire' && ctrl.status == 'click'){
+			if (clickedOn.type == 'campfire'){
 				if ( this.selecting && this.selecting.data.name == 'Stick' ) {
 					if (clickedOn.intensity < 4){
 						say("Adding wood.");
@@ -153,31 +159,41 @@ player.mouse = function(){
 			} 
 			else if (clickedOn.type == 'herb'){
 				if (ctrl.status == 'click'){
-					if (dist < 100){ app.clickHerb(clickedOn); } 
+					if (dist < 100){
+						app.task(function(){ app.clickHerb(clickedOn); }, 1);
+					} 
 					else { say('too far!'); }	
 				}
 			}
 			else if (clickedOn.type == 'deer' || clickedOn.status == 'dead'){
 				if (ctrl.status == 'click'){
-					if (dist < 100){ app.skinAnimal(this, clickedOn); } 
+					if (dist < 100){
+						app.task( function(){ app.skinAnimal(this, clickedOn); }, 1 );
+					} 
 					else { say('too far!'); }	
 				}
 			}
 			else if (clickedOn.type == 'stonePile'){
 				if (ctrl.status == 'click'){
-					if (dist < 100){ app.clickStonePile(clickedOn); } 
+					if (dist < 100){
+						app.task( function(){ app.clickStonePile(clickedOn); }, 1 );
+					} 
 					else { say('too far!'); }	
 				}
 			}
 			else if (clickedOn.type == 'tree'){
 				if (ctrl.status == 'click'){
-					if (dist < 100){ app.clickTree(clickedOn); } 
+					if (dist < 100){
+						app.task(function(){ app.clickTree(clickedOn); }, 1);
+					} 
 					else { say('too far!'); }	
 				}
 			}
 			else if (clickedOn.type == 'herb'){
 				if (ctrl.status == 'click'){
-					if (dist < 100){ app.clickHerb(clickedOn); } 
+					if (dist < 100){
+						app.task(function(){ app.clickHerb(clickedOn); }, 1);
+					} 
 					else { say('too far!'); }	
 				}
 			}
@@ -197,22 +213,24 @@ player.mouse = function(){
 							//else if ( ctrl.status == 'dragging' ){ app.destroyWall(ctrl.draggedOn); }	
 						}
 						else if ( this.selecting.data.name == 'Stick' ){
-							app.destroyWall(clickedOn);
+							app.task(function(){ app.destroyWall(clickedOn); }, 1);
 						}
 					}
 				}
 				else { say('too far!'); }
 			}
 			else if ( clickedOn.type == 'water' && ctrl.status == 'click' ){
-				say("Ug drink.");
-				this.thirst = 1;
+				app.task(function(){
+					say("Ug drink.");
+					this.thirst = 1;
+				}, 1);
 			}
 			else if (clickedOn.type == 'player'){
 				if ( ctrl.status == 'click' ){
 					if (this.selecting){
 						var data = this.selecting.data;
 						if (data.edible){ 
-							this.eat(data);
+							app.task(function(){ this.eat(data); }, 1);
 						}
 					}
 					else { say('Ug!'); }
@@ -222,9 +240,9 @@ player.mouse = function(){
 		} else if ( (dist > 20 && dist < 85) ){
 			if ( this.selecting ){
 				if ( this.selecting.data.name == 'Stone' ){
-					app.makeWall( x, y );	
+					app.task(function(){ app.makeWall( x, y ); }, 1);
 				} else if ( this.selecting.data.name == 'Stick' && ctrl.status == 'click' ){
-					app.makeFire( x, y );	
+					app.task(function(){ app.makeFire( x, y ); }, 1);
 				}
 			}
 		}
@@ -335,45 +353,48 @@ player.monitorCondition = function(dt){
 	//console.log( Math.round(this.vitality * 1000)/1000 )
 }
 
-// HEALTH
-player.healthBar = createUI(7, undefined, 106, 18, '#000000');
-var healthBar = player.healthBar;
-healthBar.style.bottom = '70px';
-app.window.appendChild(player.healthBar);
-player.healthMeter = createUI(10, undefined, 100, 12, '#ff0000');
-var healthMeter = player.healthMeter;
-healthMeter.style.bottom = '73px';
-app.window.appendChild(player.healthMeter);
 
-// HUNGER
-player.hungerBar = createUI(7, undefined, 106, 18, '#000000');
-var hungerBar = player.hungerBar;
-hungerBar.style.bottom = '50px';
-app.window.appendChild(player.hungerBar);
-player.hungerMeter = createUI(10, undefined, 100, 12, '#99bb55');
-var hungerMeter = player.hungerMeter;
-hungerMeter.style.bottom = '53px';
-app.window.appendChild(player.hungerMeter);
+player.setupBars = function(){
+	// HEALTH
+	player.healthBar = createUI(7, undefined, 106, 18, '#000000');
+	var healthBar = player.healthBar;
+	healthBar.style.bottom = '70px';
+	app.window.appendChild(player.healthBar);
+	player.healthMeter = createUI(10, undefined, 100, 12, '#ff0000');
+	var healthMeter = player.healthMeter;
+	healthMeter.style.bottom = '73px';
+	app.window.appendChild(player.healthMeter);
 
-// Thirst
-player.thirstBar = createUI(7, undefined, 106, 18, '#000000');
-var thirstBar = player.thirstBar;
-thirstBar.style.bottom = '30px';
-app.window.appendChild(player.thirstBar);
-player.thirstMeter = createUI(10, undefined, 100, 12, '#8888bb');
-var thirstMeter = player.thirstMeter;
-thirstMeter.style.bottom = '33px';
-app.window.appendChild(player.thirstMeter);
+	// HUNGER
+	player.hungerBar = createUI(7, undefined, 106, 18, '#000000');
+	var hungerBar = player.hungerBar;
+	hungerBar.style.bottom = '50px';
+	app.window.appendChild(player.hungerBar);
+	player.hungerMeter = createUI(10, undefined, 100, 12, '#99bb55');
+	var hungerMeter = player.hungerMeter;
+	hungerMeter.style.bottom = '53px';
+	app.window.appendChild(player.hungerMeter);
 
-// Temp
-player.tempBar = createUI(7, undefined, 106, 18, '#000000');
-var tempBar = player.tempBar;
-tempBar.style.bottom = '10px';
-app.window.appendChild(player.tempBar);
-player.tempMeter = createUI(10, undefined, 100, 12, '#aa4444');
-var tempMeter = player.tempMeter;
-tempMeter.style.bottom = '13px';
-app.window.appendChild(player.tempMeter);
+	// Thirst
+	player.thirstBar = createUI(7, undefined, 106, 18, '#000000');
+	var thirstBar = player.thirstBar;
+	thirstBar.style.bottom = '30px';
+	app.window.appendChild(player.thirstBar);
+	player.thirstMeter = createUI(10, undefined, 100, 12, '#8888bb');
+	var thirstMeter = player.thirstMeter;
+	thirstMeter.style.bottom = '33px';
+	app.window.appendChild(player.thirstMeter);
+
+	// Temp
+	player.tempBar = createUI(7, undefined, 106, 18, '#000000');
+	var tempBar = player.tempBar;
+	tempBar.style.bottom = '10px';
+	app.window.appendChild(player.tempBar);
+	player.tempMeter = createUI(10, undefined, 100, 12, '#aa4444');
+	var tempMeter = player.tempMeter;
+	tempMeter.style.bottom = '13px';
+	app.window.appendChild(player.tempMeter);
+}
 
 player.hurt = function(amt){
 	if ( !this.alive ){ return }

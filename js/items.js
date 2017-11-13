@@ -239,9 +239,5 @@ app.closeStash = function(){
 	player.noMove = false;
 }
 
-app.runTest = function(){
-	console.log( 'no test to run right now' );
-}
-
 })();
 

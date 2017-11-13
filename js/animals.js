@@ -23,7 +23,7 @@ app.animalController = function(){ // should run once each day
 
 app.animalSpawner = function(wf){
 	var animal = wf.animalType;
-	console.log('animals spawning - '+animal.type)
+	//console.log('animals spawning - '+animal.type)
 	if (animal.type == 'deer'){
 		for (var i = 0; i < animal.population; i++) {
 			if ( Math.random() < animal.chance ){
@@ -111,7 +111,7 @@ app.newDeer = function(x, y, gender){
 	deer.health = 1;
 
 	app.deer.push( deer );
-	console.log('new deer. ( '+ app.deer.length +' total )');
+	//console.log('new deer. ( '+ app.deer.length +' total )');
 }
 
 
@@ -251,7 +251,7 @@ app.newRodent = function(x, y){
 	rodent.health = 1;
 
 	app.rodents.push( rodent );
-	console.log('new rodent. ( '+ app.rodents.length +' total )');
+	//console.log('new rodent. ( '+ app.rodents.length +' total )');
 }
 
 app.updateRodents = function(dt){

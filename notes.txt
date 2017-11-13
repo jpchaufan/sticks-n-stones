@@ -2,9 +2,25 @@ Sticks and Stones is a game about nomadic wilderness survival and exploration.
 
 The player is a nomadic caveman exploring the world as a lone scout, who relies on his wits and skills, not high-quality equipment, to survive and explore the world.
 
-Scouting, tracking, hunting, and trapping allow the player to experience what hunting might have been like. The player is also on the receiving end at times, when large cats may stalk the player. 
+Scouting, tracking, hunting, and trapping allow the player to acquire food and other resources. The player is also on the receiving end at times, when large cats or wolves may stalk the player. 
 
 Foraging and gathering is also important, as the player must collect plant foods and materials for survival.
+
+The player gains experience in a variety of skills as he practices, including possibly:
+Hunting
+Skinning
+Firemaking
+Stonework
+Crafting
+Herbalism
+Tracking
+Stealth
+Fishing
+
+A possible fantasy element would include:
+different races associated with each of the five elements - fire, air, water, wood, and mineral
+and associated bonuses and types of magic abilities
+
 
 
 

@@ -104,17 +104,7 @@ function say(message){
 				boxShadow: '0 0 5px 5px rgba(255, 255, 255, 0.5',
 				borderRadius: '10px' });
 }
-createText('Sticks and Stones', 2700,
-			window.innerWidth*0.3,
-			window.innerHeight/1.5,
-			{
-				color: "#3e3e3e",
-				fontSize: "40px",
-				fontVariant: "small-caps",
-				backgroundColor: 'rgba(255, 255, 255, 0.5)',
-				boxShadow: '0 0 5px 5px rgba(255, 255, 255, 0.5',
-				borderRadius: '10px'
-			});
+
 
 // Utility Functions //
 

@@ -39,6 +39,18 @@ app.setupPauseMenu = function(){
 	})
 	app.pauseMenu.appendChild(helpBtn);
 
+	// close btn
+	var closeBtn = document.createElement('div');
+	closeBtn.style.backgroundColor = app.color5;
+	closeBtn.style.padding = '10px';
+	closeBtn.style.color =  app.color3;
+	closeBtn.style.marginTop = '20px';
+	closeBtn.innerText = 'Unpause (P)';
+	closeBtn.addEventListener('click', function(){
+		app.pauseGame();
+	})
+	app.pauseMenu.appendChild(closeBtn);
+
 }
 
 

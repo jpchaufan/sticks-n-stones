@@ -378,9 +378,9 @@ player.effectiveTemperature = function(){
 		}
 	};
 	var effectiveTemp = app.temp.current + hottestFire*2;
-	if (hottestFire){
-		console.log('extra warmth from fire', app.temp.current, effectiveTemp)	
-	}
+	// if (hottestFire){
+	// 	console.log('extra warmth from fire', app.temp.current, effectiveTemp)	
+	// }
 	return effectiveTemp;
 }
 player.monitorCondition = function(dt){

@@ -91,7 +91,7 @@ app.manageItems = function(itemData, amt){ // manage player items in inventory
 		}
 	} else if (items.length <= 20) {
 		var image, offsetX;
-		var elem = createUI(130+40*items.length, null, 40, 40);
+		var elem = createUI(190+40*items.length, null, 40, 40);
 		elem.style.bottom = '0';
 		if (itemData.isCooked){
 			elem.style.opacity = '0.8';

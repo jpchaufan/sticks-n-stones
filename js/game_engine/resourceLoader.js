@@ -13,8 +13,8 @@ app.assetWasLoaded = function(){
 		app.window.removeChild(app.loadingBar);
 		app.setupHelpMenu();
 		app.setupCreditsMenu();
-		app.createStartMenu();
-		//app.startGame();
+		//app.createStartMenu();
+		app.startGame();
 	}
 }
 

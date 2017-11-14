@@ -29,8 +29,6 @@ next steps:
 ## little ##
 add mushrooms
 
-add prettier condition bars
-
 
 ## big ## 
 

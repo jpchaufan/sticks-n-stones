@@ -173,6 +173,7 @@ app.setupCreditsMenu = function(){
 	app.creditsMenu.style.overflow="scroll";
 
 	var content = '<h1 style="margin-bottom: 10px; font-variant: small-caps">Credits</h1>'+
+				'<p> Game designed and created by JP </p>'+
 				'<p> A huge thanks to <a target="_blank" href="http://www.opengameart.com">opengamneart.com</a>. Almost all of the art in this game was provided by opengameart.com and its users. This game would hardly be possible without them. This includes:</p><br/>'+
 
 				'<p>Daniel Eddeland</p>'+

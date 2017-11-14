@@ -107,7 +107,11 @@ app.addImages([
 	{name: 'deer-female', src: 'imgs/deer-female.png'},
 	{name: 'raw-meat', src: 'imgs/item_meat.png'},
 	{name: 'rodent', src: 'imgs/rat_0.png'},
-	{name: 'mushrooms', src: 'imgs/mushrooms.png'}
+	{name: 'mushrooms', src: 'imgs/mushrooms.png'},
+	{name: 'hungerBar', src: 'imgs/HungerBar.png'},
+	{name: 'healthBar', src: 'imgs/HealthBar.png'},
+	{name: 'thirstBar', src: 'imgs/ThirstBar.png'},
+	{name: 'tempBar', src: 'imgs/TempBar.png'}
 
 ]);
 

@@ -398,54 +398,74 @@ player.monitorCondition = function(dt){
 	}
 	player.monitorTemp(dt);
 	this.getVit();
-	this.healthMeter.style.width = this.health * 100 + 'px';
-	this.hungerMeter.style.width = this.hunger * 100 + 'px';
-	this.thirstMeter.style.width = this.thirst * 100 + 'px';
-	this.tempMeter.style.width = ( this.temp <= 1 ? this.temp : 2 - this.temp ) * 100 + 'px';
+	this.healthMeter.style.width = this.health * 144 + 'px';
+	this.hungerMeter.style.width = this.hunger * 144 + 'px';
+	this.thirstMeter.style.width = this.thirst * 144 + 'px';
+	this.tempMeter.style.width = ( this.temp <= 1 ? this.temp : 2 - this.temp ) * 144 + 'px';
 	//console.log( Math.round(this.vitality * 1000)/1000 )
 }
 
 
 player.setupBars = function(){
 	// HEALTH
-	player.healthBar = createUI(7, undefined, 106, 18, '#000000');
-	var healthBar = player.healthBar;
-	healthBar.style.bottom = '70px';
-	app.window.appendChild(player.healthBar);
-	player.healthMeter = createUI(10, undefined, 100, 12, '#ff0000');
+	player.healthBarBack = createUI(31, undefined, 144, 12, '#000000');
+	var healthBarBack = player.healthBarBack;
+	healthBarBack.style.bottom = '125px';
+	app.window.appendChild(player.healthBarBack);
+	player.healthMeter = createUI(31, undefined, 144, 12, '#ff0000');
 	var healthMeter = player.healthMeter;
-	healthMeter.style.bottom = '73px';
+	healthMeter.style.bottom = '125px';
 	app.window.appendChild(player.healthMeter);
+	player.healthBar = createUI(4, undefined, 175, 32);
+	player.healthBar.style.bottom = '115px';
+	player.healthBar.style.backgroundImage = 'url("imgs/HealthBar.png")';
+	player.healthBar.style.backgroundSize = '100% 100%';
+	app.window.appendChild(player.healthBar);
 
 	// HUNGER
-	player.hungerBar = createUI(7, undefined, 106, 18, '#000000');
-	var hungerBar = player.hungerBar;
-	hungerBar.style.bottom = '50px';
-	app.window.appendChild(player.hungerBar);
-	player.hungerMeter = createUI(10, undefined, 100, 12, '#99bb55');
+	player.hungerBarBack = createUI(31, undefined, 144, 12, '#000000');
+	var hungerBarBack = player.hungerBarBack;
+	hungerBarBack.style.bottom = '90px';
+	app.window.appendChild(player.hungerBarBack);
+	player.hungerMeter = createUI(31, undefined, 144, 12, '#99bb55');
 	var hungerMeter = player.hungerMeter;
-	hungerMeter.style.bottom = '53px';
+	hungerMeter.style.bottom = '90px';
 	app.window.appendChild(player.hungerMeter);
+	player.hungerBar = createUI(4, undefined, 175, 32);
+	player.hungerBar.style.bottom = '80px';
+	player.hungerBar.style.backgroundImage = 'url("imgs/HungerBar.png")';
+	player.hungerBar.style.backgroundSize = '100% 100%';
+	app.window.appendChild(player.hungerBar);
 
 	// Thirst
-	player.thirstBar = createUI(7, undefined, 106, 18, '#000000');
-	var thirstBar = player.thirstBar;
-	thirstBar.style.bottom = '30px';
-	app.window.appendChild(player.thirstBar);
-	player.thirstMeter = createUI(10, undefined, 100, 12, '#8888bb');
+	player.thirstBarBack = createUI(31, undefined, 144, 12, '#000000');
+	var thirstBarBack = player.thirstBarBack;
+	thirstBarBack.style.bottom = '55px';
+	app.window.appendChild(player.thirstBarBack);
+	player.thirstMeter = createUI(31, undefined, 144, 12, '#8888bb');
 	var thirstMeter = player.thirstMeter;
-	thirstMeter.style.bottom = '33px';
+	thirstMeter.style.bottom = '55px';
 	app.window.appendChild(player.thirstMeter);
+	player.thirstBar = createUI(4, undefined, 175, 32);
+	player.thirstBar.style.bottom = '45px';
+	player.thirstBar.style.backgroundImage = 'url("imgs/ThirstBar.png")';
+	player.thirstBar.style.backgroundSize = '100% 100%';
+	app.window.appendChild(player.thirstBar);
 
 	// Temp
-	player.tempBar = createUI(7, undefined, 106, 18, '#000000');
-	var tempBar = player.tempBar;
-	tempBar.style.bottom = '10px';
-	app.window.appendChild(player.tempBar);
-	player.tempMeter = createUI(10, undefined, 100, 12, '#aa4444');
+	player.tempBarBack = createUI(31, undefined, 144, 12, '#000000');
+	var tempBarBack = player.tempBarBack;
+	tempBarBack.style.bottom = '20px';
+	app.window.appendChild(player.tempBarBack);
+	player.tempMeter = createUI(31, undefined, 144, 12, '#aa4444');
 	var tempMeter = player.tempMeter;
-	tempMeter.style.bottom = '13px';
+	tempMeter.style.bottom = '20px';
 	app.window.appendChild(player.tempMeter);
+	player.tempBar = createUI(4, undefined, 175, 32);
+	player.tempBar.style.bottom = '10px';
+	player.tempBar.style.backgroundImage = 'url("imgs/TempBar.png")';
+	player.tempBar.style.backgroundSize = '100% 100%';
+	app.window.appendChild(player.tempBar);
 }
 
 player.hurt = function(amt){
